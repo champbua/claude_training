@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude AI Mastery Guide</title>
+<style>
+:root {
+  --bg: #0d0d12;
+  --surface: #161620;
+  --surface2: #1e1e2c;
+  --surface3: #26263a;
+  --border: #2a2a3e;
+  --border2: #353550;
+  --accent: #c77dff;
+  --accent2: #7b2fff;
+  --teal: #48cae4;
+  --orange: #f4a261;
+  --green: #52e3a1;
+  --red: #ff6b6b;
+  --yellow: #ffd166;
+  --text: #e8e8f2;
+  --text2: #9090b0;
+  --text3: #55556a;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --sidebar-w: 256px;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 200;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.brand-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.brand-name { font-weight: 700; font-size: 0.95rem; color: var(--text); line-height: 1.2; }
+.brand-sub { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+
+/* ── LANGUAGE TOGGLE ── */
+.lng-th { display: none !important; }
+body.tlang .lng-en { display: none !important; }
+body.tlang .lng-th { display: revert !important; }
+.lang-toggle {
+  display: flex; gap: 4px; padding: 10px 20px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.lang-btn {
+  flex: 1; padding: 6px 4px; border-radius: 6px; border: 1px solid var(--border);
+  background: none; color: var(--text2); font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; font-family: inherit; transition: all 0.15s; text-align: center;
+}
+.lang-btn.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+.lang-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+
+.sidebar-nav { padding: 12px 0; flex: 1; }
+.nav-section-label {
+  padding: 12px 20px 4px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text3);
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-size: 0.85rem; color: var(--text2);
+  transition: all 0.15s; border-left: 3px solid transparent;
+  margin: 1px 0;
+}
+.nav-item:hover { color: var(--text); background: var(--surface2); }
+.nav-item.active {
+  color: var(--accent); border-left-color: var(--accent);
+  background: rgba(199,125,255,0.08);
+  font-weight: 600;
+}
+.nav-item.done .nav-dot { background: var(--green); }
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border2); margin-left: auto; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.nav-item.active .nav-dot { background: var(--accent); }
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* ── MOBILE HEADER ── */
+.mobile-header {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  height: 52px;
+  background: rgba(13,13,18,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  align-items: center; justify-content: space-between;
+  padding: 0 16px;
+}
+.hamburger {
+  background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; gap: 5px; padding: 4px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text2); border-radius: 2px; transition: all 0.2s;
+}
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 150;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
+}
+.overlay.show { display: block; }
+
+/* ── SECTION PANEL ── */
+.section-panel {
+  display: none;
+  min-height: 100vh;
+  padding: 52px 48px 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeUp 0.35s ease;
+}
+.section-panel.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 36px; padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.1rem;
+}
+.section-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px;
+  margin-bottom: 8px; text-transform: uppercase;
+}
+.tag-purple { background: rgba(199,125,255,0.12); color: var(--accent); }
+.tag-teal { background: rgba(72,202,228,0.12); color: var(--teal); }
+.tag-orange { background: rgba(244,162,97,0.12); color: var(--orange); }
+.tag-green { background: rgba(82,227,161,0.12); color: var(--green); }
+h2 { font-size: clamp(1.3rem, 2.5vw, 1.9rem); font-weight: 800; letter-spacing: -0.5px; }
+h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+p { line-height: 1.75; color: var(--text2); margin-bottom: 12px; }
+.lead { font-size: 1.05rem; color: var(--text); line-height: 1.7; margin-bottom: 0; }
+
+/* ── CARDS ── */
+.cards { display: grid; gap: 14px; margin: 20px 0; }
+.cards-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.cards-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px; transition: all 0.2s;
+}
+.card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: var(--shadow); }
+.card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+.card-al { border-left: 3px solid var(--accent); }
+.card-tl { border-left: 3px solid var(--teal); }
+.card-ol { border-left: 3px solid var(--orange); }
+.card-gl { border-left: 3px solid var(--green); }
+
+/* ── TIP BOXES ── */
+.tip {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: 10px; margin: 14px 0; font-size: 0.9rem;
+}
+.tip.info { background: rgba(72,202,228,0.07); border: 1px solid rgba(72,202,228,0.18); }
+.tip.warn { background: rgba(255,209,102,0.07); border: 1px solid rgba(255,209,102,0.18); }
+.tip.success { background: rgba(82,227,161,0.07); border: 1px solid rgba(82,227,161,0.18); }
+.tip.purple { background: rgba(199,125,255,0.07); border: 1px solid rgba(199,125,255,0.18); }
+.tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+.tip p { margin: 0; color: var(--text); font-size: 0.9rem; }
+
+/* ── HIGHLIGHT ── */
+.highlight {
+  background: rgba(199,125,255,0.07);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 18px 0;
+  font-size: 0.9rem; line-height: 1.7; color: var(--text);
+}
+
+/* ── DIVIDER ── */
+hr.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+/* ── COMPARE TABLE ── */
+.compare-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.88rem; }
+.compare-table th, .compare-table td {
+  padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border);
+}
+.compare-table th {
+  background: var(--surface); color: var(--text2);
+  font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.compare-table td { background: var(--surface2); }
+.compare-table tr:hover td { background: var(--surface); }
+.chk { color: var(--green); font-weight: 700; }
+.crs { color: var(--red); }
+.prt { color: var(--yellow); }
+
+/* ── MODEL GRID ── */
+.model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+.model-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; text-align: center; transition: all 0.2s;
+}
+.model-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.model-name { font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+.model-tier { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 14px; }
+.model-stat { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.model-stat:last-child { border: none; }
+
+/* ── ACCORDION ── */
+.accordion { margin: 16px 0; }
+.acc-item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+.acc-head {
+  padding: 13px 18px; cursor: pointer; display: flex; justify-content: space-between;
+  align-items: center; background: var(--surface); font-weight: 600; font-size: 0.9rem;
+  transition: background 0.15s;
+}
+.acc-head:hover { background: var(--surface2); }
+.acc-arrow { transition: transform 0.3s; font-size: 0.75rem; color: var(--text2); }
+.acc-item.open .acc-arrow { transform: rotate(180deg); }
+.acc-body {
+  display: none; padding: 16px 18px; background: var(--surface2);
+  border-top: 1px solid var(--border); font-size: 0.88rem; line-height: 1.75; color: var(--text2);
+}
+.acc-item.open .acc-body { display: block; }
+
+/* ── PROMPT BOX ── */
+.prompt-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 14px 0; }
+.prompt-label {
+  padding: 7px 16px; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border);
+}
+.prompt-label.bad { background: rgba(255,107,107,0.08); color: var(--red); }
+.prompt-label.good { background: rgba(82,227,161,0.08); color: var(--green); }
+.prompt-text { padding: 14px 16px; font-size: 0.88rem; line-height: 1.65; color: var(--text); }
+.prompt-note { padding: 6px 16px 12px; font-size: 0.78rem; color: var(--text2); font-style: italic; }
+
+/* ── STYLED LIST ── */
+ul.sl, ol.sl { padding-left: 20px; }
+ul.sl li, ol.sl li { margin-bottom: 8px; color: var(--text2); line-height: 1.65; }
+ul.sl li strong, ol.sl li strong { color: var(--text); }
+
+/* ── PILL ── */
+.pill {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 600;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
+  margin: 2px;
+}
+.flex-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+
+/* ── BADGE ── */
+.badge {
+  display: inline-block; padding: 2px 9px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.03em; white-space: nowrap;
+}
+.badge-do { background: rgba(255,107,107,0.12); color: #ff9090; border: 1px solid rgba(255,107,107,0.25); }
+.badge-try { background: rgba(82,227,161,0.12); color: var(--green); border: 1px solid rgba(82,227,161,0.25); }
+
+/* ── PRACTICE CARD ── */
+.pcard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; margin-bottom: 12px;
+}
+.pcard-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.pcard h3 { font-size: 1rem; font-weight: 600; }
+.pcard p { font-size: 0.88rem; color: var(--text2); margin-bottom: 12px; }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.compare-box { border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; line-height: 1.6; }
+.compare-box.before { background: rgba(255,107,107,0.06); border: 1px solid rgba(255,107,107,0.2); color: var(--text2); }
+.compare-box.after { background: rgba(82,227,161,0.06); border: 1px solid rgba(82,227,161,0.2); color: var(--text2); }
+.compare-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.compare-box.before .compare-label { color: var(--red); }
+.compare-box.after .compare-label { color: var(--green); }
+
+/* ── TIPS GRID ── */
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0; }
+.tcard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px;
+}
+.tcard:hover { border-color: var(--border2); }
+.tnum { font-size: 1.6rem; font-weight: 800; color: var(--border2); line-height: 1; margin-bottom: 10px; }
+.tcard h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+.tcard p { font-size: 0.85rem; color: var(--text2); line-height: 1.65; margin: 0 0 10px; }
+.tcard .eg {
+  padding: 10px 12px; background: var(--surface2); border-radius: 7px;
+  font-size: 0.78rem; line-height: 1.6; color: var(--text2); white-space: pre-wrap;
+}
+.tcard.star {
+  background: rgba(199,125,255,0.05);
+  border-color: rgba(199,125,255,0.25);
+  grid-column: 1 / -1;
+}
+.tcard.star h3 { color: var(--accent); }
+
+/* ── SCENARIOS ── */
+.scen-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.scen-btn {
+  padding: 8px 18px; border: 1px solid var(--border); border-radius: 20px;
+  background: none; font-size: 0.85rem; color: var(--text2); cursor: pointer;
+  font-family: inherit; transition: all 0.15s;
+}
+.scen-btn.active { background: var(--accent2); color: #fff; border-color: var(--accent2); font-weight: 600; }
+.scen-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+.level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.lcard { border-radius: 12px; padding: 16px 18px; border: 1px solid; }
+.lcard.bad { background: rgba(255,107,107,0.05); border-color: rgba(255,107,107,0.25); }
+.lcard.med { background: rgba(255,209,102,0.05); border-color: rgba(255,209,102,0.25); }
+.lcard.great { background: rgba(82,227,161,0.05); border-color: rgba(82,227,161,0.25); }
+.lvl-lbl { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.lcard.bad .lvl-lbl { color: var(--red); }
+.lcard.med .lvl-lbl { color: var(--yellow); }
+.lcard.great .lvl-lbl { color: var(--green); }
+.lcard-text { font-size: 0.8rem; line-height: 1.6; color: var(--text); white-space: pre-wrap; max-height: 220px; overflow-y: auto; }
+.lcard-note { font-size: 0.75rem; color: var(--text3); margin-top: 8px; font-style: italic; }
+.analysis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.acard { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.acard h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 12px; }
+.chk-row { display: flex; align-items: flex-start; gap: 8px; font-size: 0.82rem; color: var(--text2); margin-bottom: 7px; line-height: 1.45; }
+.ci { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; }
+.ci.y { background: rgba(82,227,161,0.2); color: var(--green); }
+.ci.n { background: rgba(255,107,107,0.2); color: var(--red); }
+
+/* ── PROMPT BUILDER ── */
+.builder-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.builder-form, .builder-preview {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+}
+.builder-form h3, .builder-preview h3 {
+  font-size: 0.9rem; font-weight: 700; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border); margin-bottom: 18px;
+  color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px;
+}
+.field { margin-bottom: 16px; }
+.field > label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 5px; flex-wrap: wrap;
+}
+.field .hint { font-size: 0.75rem; color: var(--text2); margin-bottom: 6px; line-height: 1.5; }
+.field textarea, .field input[type=text], .field select {
+  width: 100%; padding: 9px 12px; font-size: 0.85rem; font-family: inherit;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface2); color: var(--text); resize: vertical; line-height: 1.55;
+  transition: border-color 0.15s;
+}
+.field textarea:focus, .field input[type=text]:focus, .field select:focus {
+  outline: none; border-color: var(--accent); background: var(--surface3);
+}
+.field select option { background: var(--surface2); }
+.toggle-row {
+  display: flex; align-items: center; gap: 8px; font-size: 0.82rem;
+  color: var(--text2); cursor: pointer; margin-bottom: 8px; user-select: none;
+}
+.toggle-row input { cursor: pointer; accent-color: var(--accent); width: 14px; height: 14px; }
+.field-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+.quality-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.quality-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.quality-fill { height: 100%; border-radius: 3px; transition: width 0.35s, background 0.35s; width: 0%; background: var(--border2); }
+.quality-label { font-size: 0.75rem; color: var(--text2); min-width: 110px; text-align: right; }
+
+.chip-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip {
+  font-size: 0.72rem; padding: 3px 10px; border-radius: 20px;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text3); transition: all 0.2s;
+}
+.chip.done { background: rgba(82,227,161,0.1); border-color: rgba(82,227,161,0.3); color: var(--green); }
+
+.preview-box {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px; min-height: 180px; max-height: 380px; overflow-y: auto; margin-bottom: 12px;
+}
+.preview-text { font-size: 0.83rem; line-height: 1.75; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+.preview-empty { font-size: 0.83rem; color: var(--text3); font-style: italic; }
+
+.builder-actions { display: flex; gap: 8px; }
+.btn-copy {
+  flex: 1; padding: 10px; background: var(--accent2); color: #fff;
+  border: none; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.btn-copy:hover { background: var(--accent); }
+.btn-copy.ok { background: #2e7d32; }
+.btn-reset {
+  padding: 10px 16px; background: var(--surface3); color: var(--text2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-reset:hover { border-color: var(--red); color: var(--red); }
+
+/* ── TOKEN METER ── */
+.token-section { background: var(--surface); border-radius: var(--radius); padding: 22px; margin: 16px 0; }
+.token-bar-wrap { background: var(--bg); border-radius: 20px; height: 22px; overflow: hidden; margin: 7px 0; position: relative; }
+.token-bar {
+  height: 100%; border-radius: 20px; transition: width 0.5s ease;
+  display: flex; align-items: center; padding-left: 12px;
+  font-size: 0.72rem; font-weight: 700; color: #000; white-space: nowrap;
+}
+.token-bar.sys { background: var(--teal); }
+.token-bar.usr { background: var(--orange); }
+.token-bar.res { background: var(--green); }
+
+/* ── QUIZ ── */
+.quiz-q { background: var(--surface); border-radius: var(--radius); padding: 22px; margin-bottom: 14px; }
+.quiz-q h3 { margin-bottom: 14px; font-size: 0.95rem; }
+.quiz-opts { display: grid; gap: 8px; }
+.quiz-opt {
+  padding: 11px 15px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); cursor: pointer; transition: all 0.15s; font-size: 0.88rem; color: var(--text);
+}
+.quiz-opt:hover { border-color: var(--accent); background: var(--surface); }
+.quiz-opt.correct { border-color: var(--green); background: rgba(82,227,161,0.08); color: var(--green); }
+.quiz-opt.wrong { border-color: var(--red); background: rgba(255,107,107,0.08); color: var(--red); }
+.quiz-feedback {
+  margin-top: 10px; padding: 10px 14px; border-radius: var(--radius-sm);
+  font-size: 0.83rem; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: rgba(82,227,161,0.08); color: var(--green); border: 1px solid rgba(82,227,161,0.25); }
+.quiz-feedback.wrong { background: rgba(255,107,107,0.08); color: var(--red); border: 1px solid rgba(255,107,107,0.25); }
+
+.score-panel { text-align: center; padding: 40px 20px; }
+.score-circle {
+  width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; font-weight: 800;
+  background: conic-gradient(var(--accent) 0%, var(--surface2) 0%);
+  transition: background 0.8s ease;
+}
+.btn-ghost {
+  padding: 10px 22px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text2); cursor: pointer;
+  font-size: 0.88rem; font-weight: 600; font-family: inherit; transition: all 0.15s;
+  margin-top: 12px;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── NAV FOOTER ── */
+.section-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--border);
+}
+.btn-nav {
+  padding: 10px 22px; border-radius: var(--radius-sm); border: none;
+  cursor: pointer; font-size: 0.88rem; font-weight: 600; font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-prev { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.btn-prev:hover { color: var(--text); border-color: var(--accent); }
+.btn-next { background: var(--accent2); color: #fff; }
+.btn-next:hover { background: var(--accent); transform: translateY(-1px); }
+.nav-counter { font-size: 0.8rem; color: var(--text2); }
+
+/* ── KBD ── */
+.kbd {
+  display: inline-block; padding: 2px 7px; border-radius: 5px;
+  background: var(--surface); border: 1px solid var(--border); border-bottom-width: 2px;
+  font-family: monospace; font-size: 0.78rem; color: var(--text); margin: 0 2px;
+}
+
+/* ── CRAFT CARDS ── */
+.craft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+.craft-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+}
+.craft-card-t { grid-column: span 2; }
+.craft-letter {
+  font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 6px;
+}
+.craft-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.craft-card p { font-size: 0.85rem; color: var(--text2); margin-bottom: 10px; }
+.craft-eg {
+  background: var(--surface2); border-radius: 7px; padding: 10px 12px;
+  font-size: 0.78rem; color: var(--text2); line-height: 1.55; font-style: italic;
+}
+
+/* ── OVERVIEW HERO ── */
+.hero {
+  text-align: center; padding: 40px 0 32px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px; border-radius: 20px;
+  background: rgba(199,125,255,0.08); border: 1px solid rgba(199,125,255,0.25);
+  font-size: 0.82rem; font-weight: 600; color: var(--accent); margin-bottom: 20px;
+}
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+h1.hero-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 14px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .mobile-header { display: flex; }
+  .section-panel { padding: 72px 20px 60px; }
+  .cards-2, .cards-3, .model-grid, .compare-grid, .level-grid, .analysis, .builder-layout { grid-template-columns: 1fr; }
+  .tips-grid { grid-template-columns: 1fr; }
+  .tcard.star { grid-column: 1; }
+  .craft-grid { grid-template-columns: 1fr; }
+  .craft-card-t { grid-column: 1; }
+}
+@media (max-width: 480px) {
+  .section-panel { padding: 68px 14px 50px; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .level-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile Header -->
+<header class="mobile-header">
+  <button class="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+  <div style="font-weight:700;font-size:0.9rem;color:var(--accent)">✦ <span class="lng-en">Claude AI Guide</span><span class="lng-th">คู่มือ Claude AI</span></div>
+  <div style="font-size:0.75rem;color:var(--text2)" id="mobileCounter">1/12</div>
+</header>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">✦</div>
+    <div>
+      <div class="brand-name"><span class="lng-en">Claude AI Guide</span><span class="lng-th">คู่มือ Claude AI</span></div>
+      <div class="brand-sub"><span class="lng-en">Mastery Course</span><span class="lng-th">หลักสูตรฉบับสมบูรณ์</span></div>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-btn" id="btn-th" onclick="setLang('th')">🇹🇭 TH</button>
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav"></nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main" id="mainContent">
+
+<!-- ═══ SECTION 0: OVERVIEW ═══ -->
+<div class="section-panel active" id="s0">
+  <div class="hero">
+    <div class="hero-badge"><span>✦</span> <span class="lng-en">Interactive Mastery Guide</span><span class="lng-th">คู่มือเรียนรู้แบบโต้ตอบ</span></div>
+    <h1 class="hero-title"><span class="gradient-text"><span class="lng-en">Master Claude AI</span><span class="lng-th">เชี่ยวชาญ Claude AI</span></span></h1>
+    <p style="max-width:560px;margin:0 auto 28px;font-size:1rem;color:var(--text2);line-height:1.7;">
+      <span class="lng-en">Everything you need to go from curious beginner to confident daily user — from choosing the right tool to writing prompts that actually work.</span>
+      <span class="lng-th">ทุกสิ่งที่คุณต้องรู้ตั้งแต่ผู้เริ่มต้นจนถึงผู้ใช้งานมั่นใจทุกวัน — ตั้งแต่การเลือกเครื่องมือที่เหมาะสมจนถึงการเขียน Prompt ที่ได้ผลจริง</span>
+    </p>
+    <div class="flex-pills" style="justify-content:center;margin-bottom:36px;">
+      <span class="pill"><span class="lng-en">12 Chapters</span><span class="lng-th">12 บท</span></span>
+      <span class="pill"><span class="lng-en">Interactive Quiz</span><span class="lng-th">แบบทดสอบ</span></span>
+      <span class="pill"><span class="lng-en">Prompt Builder</span><span class="lng-th">สร้าง Prompt</span></span>
+      <span class="pill"><span class="lng-en">Before &amp; After</span><span class="lng-th">ก่อนและหลัง</span></span>
+      <span class="pill">~35 min</span>
+    </div>
+  </div>
+
+  <div class="cards cards-3">
+    <div class="card card-al" style="cursor:pointer" onclick="goTo(4)">
+      <div class="card-icon">📝</div>
+      <h3><span class="lng-en">Prompting Basics</span><span class="lng-th">พื้นฐานการ Prompt</span></h3>
+      <p><span class="lng-en">The everyday practices that make the biggest difference — no technical knowledge needed.</span><span class="lng-th">เทคนิคประจำวันที่ส่งผลมากที่สุด — ไม่ต้องมีความรู้ด้านเทคนิคใดๆ</span></p>
+    </div>
+    <div class="card card-tl" style="cursor:pointer" onclick="goTo(3)">
+      <div class="card-icon">🔄</div>
+      <h3><span class="lng-en">Chat vs Cowork vs Code</span><span class="lng-th">Chat vs Cowork vs Code</span></h3>
+      <p><span class="lng-en">Pick the right Claude interface for every task and stop leaving capability on the table.</span><span class="lng-th">เลือกอินเทอร์เฟสที่เหมาะสมสำหรับทุกงาน เพื่อใช้ประโยชน์จาก Claude ได้เต็มที่</span></p>
+    </div>
+    <div class="card card-ol" style="cursor:pointer" onclick="goTo(8)">
+      <div class="card-icon">🔨</div>
+      <h3><span class="lng-en">Prompt Builder</span><span class="lng-th">สร้าง Prompt</span></h3>
+      <p><span class="lng-en">Build structured, high-quality prompts with a guided form and live quality score.</span><span class="lng-th">สร้าง Prompt มีโครงสร้างคุณภาพสูงด้วยฟอร์มแนะนำและคะแนนคุณภาพแบบเรียลไทม์</span></p>
+    </div>
+  </div>
+
+  <div class="tip info" style="margin-top:24px;">
+    <div class="tip-icon">⌨️</div>
+    <p><span class="lng-en">Use <strong>Next / Back</strong> at the bottom of each section, click the sidebar links, or press <span class="kbd">→</span> <span class="kbd">←</span> to navigate.</span><span class="lng-th">ใช้ปุ่ม <strong>ถัดไป / ย้อนกลับ</strong> ที่ด้านล่างของแต่ละบท คลิกลิงก์ในแถบด้านข้าง หรือกด <span class="kbd">→</span> <span class="kbd">←</span> เพื่อนำทาง</span></p>
+  </div>
+
+  <div class="section-nav">
+    <span></span>
+    <span class="nav-counter">1 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(1)"><span class="lng-en">Start →</span><span class="lng-th">เริ่ม →</span></button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: WHAT IS CLAUDE ═══ -->
+<div class="section-panel" id="s1">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div>
+      <div class="section-tag tag-purple"><span class="lng-en">Foundation</span><span class="lng-th">พื้นฐาน</span></div>
+      <h2><span class="lng-en">What is Claude?</span><span class="lng-th">Claude คืออะไร?</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Think of Claude as a brilliant new colleague who joined your team today. They're exceptionally capable — but they don't know your business, your audience, or what "good" looks like to you unless you tell them.</span><span class="lng-th">ลองนึกถึง Claude เหมือนเพื่อนร่วมงานใหม่ที่เก่งมากที่เพิ่งเข้าทีมวันนี้ พวกเขามีความสามารถสูงมาก — แต่ไม่รู้จักธุรกิจของคุณ กลุ่มเป้าหมาย หรือสิ่งที่คุณคาดหวัง จนกว่าคุณจะบอกพวกเขา</span></p>
+
+  <div class="cards cards-2" style="margin:24px 0;">
+    <div class="card">
+      <h3>🔬 <span class="lng-en">Built by Anthropic</span><span class="lng-th">สร้างโดย Anthropic</span></h3>
+      <p><span class="lng-en">Anthropic was founded in 2021 by AI safety researchers. Claude is trained using Constitutional AI — a technique designed to make AI more helpful, honest, and safe.</span><span class="lng-th">Anthropic ก่อตั้งในปี 2021 โดยนักวิจัยด้านความปลอดภัย AI Claude ถูกฝึกด้วย Constitutional AI — เทคนิคที่ออกแบบมาให้ AI มีประโยชน์ ซื่อสัตย์ และปลอดภัยยิ่งขึ้น</span></p>
+    </div>
+    <div class="card">
+      <h3>🧠 <span class="lng-en">What Claude can do</span><span class="lng-th">Claude ทำอะไรได้บ้าง</span></h3>
+      <ul class="sl">
+        <li><span class="lng-en">Write, edit, and summarise text</span><span class="lng-th">เขียน แก้ไข และสรุปข้อความ</span></li>
+        <li><span class="lng-en">Analyse data, code, and documents</span><span class="lng-th">วิเคราะห์ข้อมูล โค้ด และเอกสาร</span></li>
+        <li><span class="lng-en">Research and synthesise information</span><span class="lng-th">ค้นหาและสังเคราะห์ข้อมูล</span></li>
+        <li><span class="lng-en">Reason through multi-step problems</span><span class="lng-th">คิดวิเคราะห์ปัญหาหลายขั้นตอน</span></li>
+        <li><span class="lng-en">Maintain context across long conversations</span><span class="lng-th">จดจำบริบทในการสนทนายาว</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong><span class="lng-en">Key insight:</span><span class="lng-th">ข้อคิดสำคัญ:</span></strong> <span class="lng-en">Claude's strength is <em>reasoning</em>, not just lookup. It can follow complex instructions, hold context across a conversation, and adapt its style to whatever you need.</span><span class="lng-th">จุดแข็งของ Claude คือ <em>การคิดเชิงเหตุผล</em> ไม่ใช่แค่การค้นหา สามารถปฏิบัติตามคำสั่งซับซ้อน จดจำบริบทตลอดการสนทนา และปรับสไตล์ตามที่คุณต้องการ</span>
+  </div>
+
+  <h3 style="margin:28px 0 14px;"><span class="lng-en">The Claude Model Family</span><span class="lng-th">ตระกูลโมเดล Claude</span></h3>
+  <div class="model-grid">
+    <div class="model-card" style="border-color:#c77dff;">
+      <div class="model-name" style="color:#c77dff;">Opus</div>
+      <div class="model-tier" style="color:#c77dff;"><span class="lng-en">Most Powerful</span><span class="lng-th">ทรงพลังที่สุด</span></div>
+      <div class="model-stat"><span><span class="lng-en">Intelligence</span><span class="lng-th">ความฉลาด</span></span><span>⭐⭐⭐⭐⭐</span></div>
+      <div class="model-stat"><span><span class="lng-en">Speed</span><span class="lng-th">ความเร็ว</span></span><span>⭐⭐⭐</span></div>
+      <div class="model-stat"><span><span class="lng-en">Cost</span><span class="lng-th">ราคา</span></span><span>$$$$</span></div>
+      <div class="model-stat"><span><span class="lng-en">Best for</span><span class="lng-th">เหมาะกับ</span></span><span><span class="lng-en">Complex reasoning</span><span class="lng-th">การวิเคราะห์ซับซ้อน</span></span></div>
+    </div>
+    <div class="model-card" style="border-color:#48cae4;">
+      <div class="model-name" style="color:#48cae4;">Sonnet</div>
+      <div class="model-tier" style="color:#48cae4;"><span class="lng-en">Balanced</span><span class="lng-th">สมดุล</span></div>
+      <div class="model-stat"><span><span class="lng-en">Intelligence</span><span class="lng-th">ความฉลาด</span></span><span>⭐⭐⭐⭐</span></div>
+      <div class="model-stat"><span><span class="lng-en">Speed</span><span class="lng-th">ความเร็ว</span></span><span>⭐⭐⭐⭐</span></div>
+      <div class="model-stat"><span><span class="lng-en">Cost</span><span class="lng-th">ราคา</span></span><span>$$</span></div>
+      <div class="model-stat"><span><span class="lng-en">Best for</span><span class="lng-th">เหมาะกับ</span></span><span><span class="lng-en">Most tasks</span><span class="lng-th">งานทั่วไป</span></span></div>
+    </div>
+    <div class="model-card" style="border-color:#52e3a1;">
+      <div class="model-name" style="color:#52e3a1;">Haiku</div>
+      <div class="model-tier" style="color:#52e3a1;"><span class="lng-en">Fastest</span><span class="lng-th">เร็วที่สุด</span></div>
+      <div class="model-stat"><span><span class="lng-en">Intelligence</span><span class="lng-th">ความฉลาด</span></span><span>⭐⭐⭐</span></div>
+      <div class="model-stat"><span><span class="lng-en">Speed</span><span class="lng-th">ความเร็ว</span></span><span>⭐⭐⭐⭐⭐</span></div>
+      <div class="model-stat"><span><span class="lng-en">Cost</span><span class="lng-th">ราคา</span></span><span>$</span></div>
+      <div class="model-stat"><span><span class="lng-en">Best for</span><span class="lng-th">เหมาะกับ</span></span><span><span class="lng-en">Quick, simple tasks</span><span class="lng-th">งานง่ายรวดเร็ว</span></span></div>
+    </div>
+  </div>
+
+  <div class="tip warn">
+    <div class="tip-icon">💡</div>
+    <p><strong><span class="lng-en">Rule of thumb:</span><span class="lng-th">หลักการง่ายๆ:</span></strong> <span class="lng-en">Start with <strong>Sonnet</strong> for everyday work. Move to <strong>Opus</strong> only when you hit its limits on complex tasks. Use <strong>Haiku</strong> for fast, high-volume, simple work.</span><span class="lng-th">เริ่มด้วย <strong>Sonnet</strong> สำหรับงานประจำวัน ใช้ <strong>Opus</strong> เมื่องานซับซ้อนเกินขีดจำกัด ใช้ <strong>Haiku</strong> สำหรับงานง่ายที่ต้องการความเร็ว</span></p>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(0)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">2 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(2)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: PLATFORMS ═══ -->
+<div class="section-panel" id="s2">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div>
+      <div class="section-tag tag-orange"><span class="lng-en">Platforms</span><span class="lng-th">แพลตฟอร์ม</span></div>
+      <h2><span class="lng-en">Web App vs Desktop App</span><span class="lng-th">เว็บแอป vs แอปเดสก์ท็อป</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Claude runs in your browser at <strong>claude.ai</strong> and as a native Desktop app. Both share your account and conversations, but have distinct capabilities.</span><span class="lng-th">Claude ใช้งานผ่านเบราว์เซอร์ที่ <strong>claude.ai</strong> และเป็นแอปเดสก์ท็อปแบบ native ทั้งสองแชร์บัญชีและประวัติการสนทนาร่วมกัน แต่มีความสามารถที่แตกต่างกัน</span></p>
+
+  <div class="cards cards-2" style="margin:24px 0;">
+    <div class="card" style="border-color:var(--teal);">
+      <div class="card-icon">🌐</div>
+      <h3 style="color:var(--teal);">Web App (claude.ai)</h3>
+      <ul class="sl">
+        <li><span class="lng-en">No install — works on any device or OS</span><span class="lng-th">ไม่ต้องติดตั้ง — ใช้ได้ทุกอุปกรณ์</span></li>
+        <li><span class="lng-en">Full Chat + Cowork experience</span><span class="lng-th">ประสบการณ์ Chat + Cowork เต็มรูปแบบ</span></li>
+        <li><span class="lng-en">Cowork plugins available</span><span class="lng-th">รองรับ Cowork plugins</span></li>
+        <li><span class="lng-en">Upload files up to 10 MB per file</span><span class="lng-th">อัปโหลดไฟล์ได้สูงสุด 10 MB</span></li>
+        <li><span class="lng-en">Access from anywhere</span><span class="lng-th">ใช้งานได้จากทุกที่</span></li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--orange);">
+      <div class="card-icon">🖥️</div>
+      <h3 style="color:var(--orange);">Desktop App (Mac / Windows)</h3>
+      <ul class="sl">
+        <li><span class="lng-en">Runs natively — faster UI response</span><span class="lng-th">ทำงานแบบ native — UI ตอบสนองเร็วกว่า</span></li>
+        <li><span class="lng-en">Can see your screen (with permission)</span><span class="lng-th">มองเห็นหน้าจอของคุณ (ต้องอนุญาต)</span></li>
+        <li><span class="lng-en">Global hotkey to open Claude anywhere</span><span class="lng-th">ปุ่มลัดเรียก Claude ได้จากทุกแอป</span></li>
+        <li><span class="lng-en">Drag-and-drop files from Finder/Explorer</span><span class="lng-th">ลากและวางไฟล์จาก Finder/Explorer</span></li>
+        <li><span class="lng-en">Better for file-heavy workflows</span><span class="lng-th">เหมาะกับงานที่ต้องใช้ไฟล์มาก</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:12px;"><span class="lng-en">Desktop-Exclusive Features</span><span class="lng-th">ฟีเจอร์เฉพาะเดสก์ท็อป</span></h3>
+  <div class="accordion">
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">🖱️ Screen awareness <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">The desktop app can analyse what's on your screen in real time. Ask "explain what I'm looking at" and Claude will read the active window, error message, or diagram — no copy-pasting needed.</div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">⌨️ Global hotkey <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">Open a Claude prompt overlay from any app with a configurable keyboard shortcut. Great for quick lookups while you're deep in another tool — no tab switching needed.</div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">📁 Local file access <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">On desktop, drag-drop files directly from Finder or Windows Explorer into the chat. Claude reads them without needing you to paste their contents.</div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">🔧 IDE Extensions (VS Code, JetBrains) <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">Claude Code integrates directly into VS Code and JetBrains IDEs — inline suggestions, code explanations, and one-click refactors without leaving your editor.</div>
+    </div>
+  </div>
+
+  <div class="tip success">
+    <div class="tip-icon">✅</div>
+    <p><strong><span class="lng-en">Recommendation:</span><span class="lng-th">คำแนะนำ:</span></strong> <span class="lng-en">Use the <strong>web app</strong> when you're on the go or need Cowork. Use the <strong>desktop app</strong> for focused work sessions where screen context or hotkeys save time.</span><span class="lng-th">ใช้ <strong>เว็บแอป</strong> เมื่อเดินทางหรือต้องการ Cowork ใช้ <strong>แอปเดสก์ท็อป</strong> สำหรับงานที่ต้องการบริบทจากหน้าจอหรือปุ่มลัด</span></p>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(1)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">3 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(3)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: INTERFACES ═══ -->
+<div class="section-panel" id="s3">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div>
+      <div class="section-tag tag-teal"><span class="lng-en">Interfaces</span><span class="lng-th">อินเทอร์เฟส</span></div>
+      <h2><span class="lng-en">Chat vs Cowork vs Code</span><span class="lng-th">Chat vs Cowork vs Code</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Claude ships in three distinct modes, each designed for a different kind of work. Choosing the right one dramatically affects your productivity.</span><span class="lng-th">Claude มาพร้อมกับสามโหมดที่แตกต่างกัน แต่ละโหมดออกแบบมาสำหรับงานประเภทต่างๆ การเลือกโหมดที่ถูกต้องส่งผลต่อประสิทธิภาพการทำงานอย่างมาก</span></p>
+
+  <div class="cards cards-3" style="margin:24px 0;">
+    <div class="card card-al">
+      <div class="card-icon">💬</div>
+      <h3>Chat</h3>
+      <p><span class="lng-en">Conversational back-and-forth. Best for questions, brainstorming, drafting, and one-off tasks.</span><span class="lng-th">สนทนาโต้ตอบ เหมาะสำหรับถามตอบ ระดมความคิด ร่างงาน และงานครั้งเดียว</span></p>
+      <div class="flex-pills"><span class="pill">claude.ai</span><span class="pill">Desktop</span></div>
+    </div>
+    <div class="card card-tl">
+      <div class="card-icon">🤝</div>
+      <h3>Cowork</h3>
+      <p><span class="lng-en">Multi-agent, tool-aware collaboration. Claude can use plugins, browse the web, run searches, and work on complex multi-step projects.</span><span class="lng-th">การทำงานร่วมกันแบบ multi-agent Claude ใช้ plugins ค้นหาเว็บ และทำงานหลายขั้นตอนได้</span></p>
+      <div class="flex-pills"><span class="pill">Plugins</span><span class="pill"><span class="lng-en">Multi-step</span><span class="lng-th">หลายขั้นตอน</span></span></div>
+    </div>
+    <div class="card card-ol">
+      <div class="card-icon">💻</div>
+      <h3>Claude Code</h3>
+      <p><span class="lng-en">A terminal CLI agent that reads, writes, and runs code in your actual codebase with direct filesystem access.</span><span class="lng-th">เอเจนต์ CLI ที่อ่าน เขียน และรันโค้ดในโปรเจกต์จริงของคุณ พร้อมเข้าถึงระบบไฟล์โดยตรง</span></p>
+      <div class="flex-pills"><span class="pill">CLI</span><span class="pill">Agentic</span></div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:12px;"><span class="lng-en">When to use which?</span><span class="lng-th">เมื่อไหร่ควรใช้อะไร?</span></h3>
+  <table class="compare-table">
+    <thead>
+      <tr><th>Use case</th><th>Chat</th><th>Cowork</th><th>Claude Code</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Quick question / brainstorm</td><td class="chk">✓ Best</td><td class="prt">~ Ok</td><td class="crs">✗</td></tr>
+      <tr><td>Research with web search</td><td class="crs">✗</td><td class="chk">✓ Best</td><td class="crs">✗</td></tr>
+      <tr><td>Edit files in my codebase</td><td class="crs">✗</td><td class="prt">~ Limited</td><td class="chk">✓ Best</td></tr>
+      <tr><td>Long multi-step project</td><td class="crs">✗</td><td class="chk">✓ Best</td><td class="chk">✓ Best</td></tr>
+      <tr><td>Spreadsheet / doc analysis</td><td class="prt">~ Upload</td><td class="chk">✓ Best</td><td class="prt">~ Files</td></tr>
+      <tr><td>Run terminal commands</td><td class="crs">✗</td><td class="crs">✗</td><td class="chk">✓ Best</td></tr>
+      <tr><td>Generate images / designs</td><td class="crs">✗</td><td class="chk">✓ Plugin</td><td class="crs">✗</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip info">
+    <div class="tip-icon">🔌</div>
+    <p><strong>Cowork Plugins</strong> <span class="lng-en">extend Claude with external tools — Google Drive, Canva, Gmail, spreadsheets, and custom company tools. Each plugin gives Claude new "hands" to work with.</span><span class="lng-th">ขยายความสามารถของ Claude ด้วยเครื่องมือภายนอก เช่น Google Drive, Canva, Gmail, สเปรดชีต และเครื่องมือบริษัท แต่ละ plugin เพิ่ม "มือ" ใหม่ให้ Claude ทำงานได้</span></p>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(2)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">4 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(4)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: PROMPTING BASICS ═══ -->
+<div class="section-panel" id="s4">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div>
+      <div class="section-tag tag-purple"><span class="lng-en">Prompting</span><span class="lng-th">การ Prompt</span></div>
+      <h2><span class="lng-en">Prompting Basics</span><span class="lng-th">พื้นฐานการ Prompt</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Claude is highly capable — but it doesn't know your situation unless you tell it. These practices make the biggest difference, every single time.</span><span class="lng-th">Claude มีความสามารถสูงมาก — แต่ไม่รู้สถานการณ์ของคุณจนกว่าคุณจะบอก เทคนิคเหล่านี้สร้างความแตกต่างได้มากที่สุดทุกครั้ง</span></p>
+
+  <div style="font-size:0.8rem;color:var(--text2);margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap;">
+    <span><span class="badge badge-do"><span class="lng-en">Always do this</span><span class="lng-th">ทำทุกครั้ง</span></span> &nbsp;<span class="lng-en">makes a big difference every time</span><span class="lng-th">สร้างความแตกต่างอย่างมาก</span></span>
+    <span><span class="badge badge-try"><span class="lng-en">Worth trying</span><span class="lng-th">แนะนำให้ลอง</span></span> &nbsp;<span class="lng-en">takes it from good to great</span><span class="lng-th">เปลี่ยนจากดีเป็นยอดเยี่ยม</span></span>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">Say exactly what you want</span><span class="lng-th">บอกให้ชัดว่าต้องการอะไร</span></h3><span class="badge badge-do"><span class="lng-en">Always do this</span><span class="lng-th">ทำทุกครั้ง</span></span></div>
+    <p><span class="lng-en">Don't make Claude guess. Be specific about the task, what you need, and what you'll use it for.</span><span class="lng-th">อย่าให้ Claude เดา บอกให้ชัดเจนว่างานคืออะไร ต้องการอะไร และจะนำไปใช้ทำอะไร</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">Too vague</span><span class="lng-th">คลุมเครือเกินไป</span></div><span class="lng-en">"Write an email about the project."</span><span class="lng-th">"เขียนอีเมลเรื่องโปรเจกต์"</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">Much better</span><span class="lng-th">ดีกว่ามาก</span></div><span class="lng-en">"Write a short email to our client Sarah explaining the project will be delayed by two weeks. Keep it professional and apologetic."</span><span class="lng-th">"เขียนอีเมลสั้นถึงลูกค้าชื่อ Sarah อธิบายว่าโปรเจกต์จะล่าช้า 2 สัปดาห์ ใช้ภาษาสุภาพและแสดงความรับผิดชอบ"</span></div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">Give the background and context</span><span class="lng-th">ให้ข้อมูลพื้นหลังและบริบท</span></h3><span class="badge badge-do"><span class="lng-en">Always do this</span><span class="lng-th">ทำทุกครั้ง</span></span></div>
+    <p><span class="lng-en">Claude doesn't have access to your emails, files, or past chats. Fill it in on the situation.</span><span class="lng-th">Claude ไม่มีสิทธิ์เข้าถึงอีเมล ไฟล์ หรือการสนทนาก่อนหน้าของคุณ ต้องบอกข้อมูลสถานการณ์ให้ครบ</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">Missing context</span><span class="lng-th">ขาดบริบท</span></div><span class="lng-en">"Summarize this meeting."</span><span class="lng-th">"สรุปการประชุมนี้"</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">With context</span><span class="lng-th">มีบริบท</span></div><span class="lng-en">"Summarize these meeting notes from our Q3 planning session. The audience is senior leadership who weren't there. Focus on decisions made and next steps."</span><span class="lng-th">"สรุปบันทึกการประชุมวางแผน Q3 นี้ กลุ่มผู้อ่านคือผู้บริหารระดับสูงที่ไม่ได้เข้าร่วม เน้นการตัดสินใจและขั้นตอนต่อไป"</span></div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">Specify the format you want</span><span class="lng-th">ระบุรูปแบบที่ต้องการ</span></h3><span class="badge badge-do"><span class="lng-en">Always do this</span><span class="lng-th">ทำทุกครั้ง</span></span></div>
+    <p><span class="lng-en">Bullet points or paragraphs? Short or detailed? A table? An email? If you don't specify, Claude picks — and it may not match what you had in mind.</span><span class="lng-th">Bullet points หรือย่อหน้า? สั้นหรือละเอียด? ตาราง? อีเมล? ถ้าไม่ระบุ Claude จะเลือกเอง — และอาจไม่ตรงกับที่คุณคิดไว้</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">No format</span><span class="lng-th">ไม่ระบุรูปแบบ</span></div><span class="lng-en">"Tell me the pros and cons of these two options."</span><span class="lng-th">"บอกข้อดีข้อเสียของสองตัวเลือกนี้"</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">Format specified</span><span class="lng-th">ระบุรูปแบบแล้ว</span></div><span class="lng-en">"Give me the pros and cons as a table with one sentence per point. No more than 5 rows per side."</span><span class="lng-th">"ให้ข้อดีข้อเสียเป็นตาราง หนึ่งประโยคต่อจุด ไม่เกิน 5 แถวต่อด้าน"</span></div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">Give Claude a role to play</span><span class="lng-th">กำหนดบทบาทให้ Claude</span></h3><span class="badge badge-try"><span class="lng-en">Worth trying</span><span class="lng-th">แนะนำให้ลอง</span></span></div>
+    <p><span class="lng-en">Starting with "You are a [expert]..." shifts the vocabulary, depth, and approach. It's one of the most effective techniques there is.</span><span class="lng-th">การเริ่มต้นด้วย "คุณคือ [ผู้เชี่ยวชาญ]..." เปลี่ยนคำศัพท์ ความลึก และแนวทางการตอบ นับเป็นเทคนิคที่มีประสิทธิภาพที่สุดวิธีหนึ่ง</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">No role</span><span class="lng-th">ไม่มีบทบาท</span></div><span class="lng-en">"Give me feedback on this proposal."</span><span class="lng-th">"ให้ feedback สำหรับ proposal นี้"</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">With a role</span><span class="lng-th">มีบทบาท</span></div><span class="lng-en">"You are a senior finance director reviewing a budget proposal. Give me honest feedback on whether this is financially sound, what risks you see, and what's missing."</span><span class="lng-th">"คุณคือผู้อำนวยการการเงินอาวุโสที่กำลังตรวจสอบ proposal งบประมาณ ให้ feedback จริงใจว่าแผนนี้สมเหตุสมผลทางการเงินหรือไม่ มีความเสี่ยงอะไร และขาดอะไรไป"</span></div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">Name the audience</span><span class="lng-th">ระบุกลุ่มผู้อ่าน</span></h3><span class="badge badge-try"><span class="lng-en">Worth trying</span><span class="lng-th">แนะนำให้ลอง</span></span></div>
+    <p><span class="lng-en">"Write this for a non-technical executive" and "Write this for an engineer" produce completely different results — and both can be right.</span><span class="lng-th">"เขียนสำหรับผู้บริหารที่ไม่ใช่สายเทคนิค" กับ "เขียนสำหรับวิศวกร" ให้ผลที่แตกต่างกันโดยสิ้นเชิง — และทั้งคู่ก็ถูกต้อง</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">No audience</span><span class="lng-th">ไม่ระบุผู้อ่าน</span></div><span class="lng-en">"Explain what our data shows."</span><span class="lng-th">"อธิบายว่าข้อมูลของเราแสดงอะไร"</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">Audience named</span><span class="lng-th">ระบุผู้อ่านแล้ว</span></div><span class="lng-en">"Explain what our customer satisfaction data shows to our CEO. Use plain language and lead with the business implication, not the numbers."</span><span class="lng-th">"อธิบายข้อมูลความพึงพอใจลูกค้าให้ CEO ฟัง ใช้ภาษาเข้าใจง่าย นำด้วยผลกระทบทางธุรกิจ ไม่ใช่ตัวเลข"</span></div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">Say what you don't want</span><span class="lng-th">บอกสิ่งที่ไม่ต้องการ</span></h3><span class="badge badge-try"><span class="lng-en">Worth trying</span><span class="lng-th">แนะนำให้ลอง</span></span></div>
+    <p><span class="lng-en">Negative constraints are often more effective than positive descriptions. Rule things out to shape the output fast.</span><span class="lng-th">ข้อจำกัดเชิงลบมักมีประสิทธิภาพกว่าคำอธิบายเชิงบวก การบอกสิ่งที่ไม่ต้องการช่วยปรับผลลัพธ์ได้รวดเร็ว</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">No constraints</span><span class="lng-th">ไม่มีข้อจำกัด</span></div><span class="lng-en">"Write a job posting for a marketing manager."</span><span class="lng-th">"เขียนประกาศรับสมัครงานสำหรับผู้จัดการฝ่ายการตลาด"</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">Constraints added</span><span class="lng-th">มีข้อจำกัดแล้ว</span></div><span class="lng-en">"Write a job posting. Don't use buzzwords like 'rockstar'. Don't make it longer than 300 words. Focus on the 4–5 requirements that truly matter."</span><span class="lng-th">"เขียนประกาศรับสมัคร อย่าใช้คำ buzzword เช่น 'ดาวเด่น' อย่าเกิน 300 คำ เน้น 4-5 คุณสมบัติที่สำคัญจริงๆ"</span></div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-top"><h3><span class="lng-en">If it's not right, just tell Claude what's off</span><span class="lng-th">ถ้าไม่ถูกใจ บอก Claude ตรงๆ</span></h3><span class="badge badge-try"><span class="lng-en">Worth trying</span><span class="lng-th">แนะนำให้ลอง</span></span></div>
+    <p><span class="lng-en">Don't start over — continue the conversation. Claude remembers everything you've said and can refine from there.</span><span class="lng-th">ไม่ต้องเริ่มใหม่ — สนทนาต่อไปเลย Claude จำทุกอย่างที่คุณพูดและสามารถปรับปรุงจากตรงนั้น</span></p>
+    <div class="compare-grid">
+      <div class="compare-box before"><div class="compare-label"><span class="lng-en">Starting over</span><span class="lng-th">เริ่มใหม่</span></div><span class="lng-en">[rewrites the whole prompt from scratch]</span><span class="lng-th">[เขียน Prompt ใหม่ทั้งหมดจากศูนย์]</span></div>
+      <div class="compare-box after"><div class="compare-label"><span class="lng-en">Just refine it</span><span class="lng-th">แค่ปรับแต่ง</span></div><span class="lng-en">"Good start, but it's too long and sounds too formal. Shorten to 2 paragraphs and make it feel more human."</span><span class="lng-th">"เริ่มต้นดีแล้ว แต่ยาวเกินไปและฟังดูเป็นทางการเกิน ย่อให้เหลือ 2 ย่อหน้าและทำให้ฟังดูเป็นธรรมชาติขึ้น"</span></div>
+    </div>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(3)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">5 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(5)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: FRAMEWORKS ═══ -->
+<div class="section-panel" id="s5">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div>
+      <div class="section-tag tag-teal"><span class="lng-en">Framework</span><span class="lng-th">กรอบงาน</span></div>
+      <h2><span class="lng-en">The CRAFT Framework</span><span class="lng-th">กรอบ CRAFT</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">CRAFT is a structured approach to building any prompt. You don't need every element every time — but even using two or three consistently doubles the quality of output.</span><span class="lng-th">CRAFT คือแนวทางมีโครงสร้างสำหรับสร้าง Prompt ทุกประเภท ไม่จำเป็นต้องใช้ทุกองค์ประกอบทุกครั้ง — แต่แค่ใช้สองหรือสามข้อสม่ำเสมอก็เพิ่มคุณภาพผลลัพธ์ได้เป็นสองเท่า</span></p>
+
+  <div class="craft-grid">
+    <div class="craft-card card-al">
+      <div class="craft-letter" style="color:var(--accent);">C</div>
+      <h3><span class="lng-en">Context</span><span class="lng-th">บริบท (Context)</span></h3>
+      <p><span class="lng-en">Who is the audience? What's the situation? What background does Claude need?</span><span class="lng-th">ผู้อ่านคือใคร? สถานการณ์เป็นอย่างไร? Claude ต้องรู้ข้อมูลพื้นหลังอะไรบ้าง?</span></p>
+      <div class="craft-eg">"<span class="lng-en">You are helping a junior marketing analyst prepare for a board meeting...</span><span class="lng-th">คุณกำลังช่วยนักวิเคราะห์การตลาดมือใหม่เตรียมนำเสนอต่อคณะกรรมการ...</span>"</div>
+    </div>
+    <div class="craft-card card-tl">
+      <div class="craft-letter" style="color:var(--teal);">R</div>
+      <h3><span class="lng-en">Role</span><span class="lng-th">บทบาท (Role)</span></h3>
+      <p><span class="lng-en">Tell Claude what role to play. This shifts voice, knowledge depth, and assumptions.</span><span class="lng-th">บอก Claude ว่าควรแสดงบทบาทอะไร สิ่งนี้จะเปลี่ยนน้ำเสียง ความลึกของความรู้ และสมมติฐาน</span></p>
+      <div class="craft-eg">"<span class="lng-en">Act as a senior UX researcher who reviews products for accessibility...</span><span class="lng-th">ทำตัวเป็นนักวิจัย UX อาวุโสที่ตรวจสอบผลิตภัณฑ์ด้านการเข้าถึง...</span>"</div>
+    </div>
+    <div class="craft-card card-ol">
+      <div class="craft-letter" style="color:var(--orange);">A</div>
+      <h3><span class="lng-en">Action</span><span class="lng-th">การกระทำ (Action)</span></h3>
+      <p><span class="lng-en">State the task with a strong verb: write, analyse, summarise, compare, draft, review.</span><span class="lng-th">ระบุงานด้วยคำกริยาชัดเจน: เขียน, วิเคราะห์, สรุป, เปรียบเทียบ, ร่าง, ตรวจสอบ</span></p>
+      <div class="craft-eg">"<span class="lng-en">Compare these two pricing strategies and highlight trade-offs...</span><span class="lng-th">เปรียบเทียบกลยุทธ์ราคาสองแบบนี้และเน้น trade-offs...</span>"</div>
+    </div>
+    <div class="craft-card card-gl">
+      <div class="craft-letter" style="color:var(--green);">F</div>
+      <h3><span class="lng-en">Format</span><span class="lng-th">รูปแบบ (Format)</span></h3>
+      <p><span class="lng-en">Specify structure: bullet list, table, JSON, markdown, numbered steps, email.</span><span class="lng-th">ระบุโครงสร้าง: bullet list, ตาราง, JSON, markdown, ขั้นตอนแบบลำดับ, อีเมล</span></p>
+      <div class="craft-eg">"<span class="lng-en">Output as a table with three columns: Option, Pros, Cons...</span><span class="lng-th">แสดงผลเป็นตาราง 3 คอลัมน์: ตัวเลือก, ข้อดี, ข้อเสีย...</span>"</div>
+    </div>
+    <div class="craft-card card-al craft-card-t">
+      <div class="craft-letter" style="color:var(--accent);">T</div>
+      <h3><span class="lng-en">Tone &amp; Constraints</span><span class="lng-th">น้ำเสียงและข้อจำกัด (Tone &amp; Constraints)</span></h3>
+      <p><span class="lng-en">Set tone (professional, casual, concise) and add hard limits — max word count, no jargon, no bullet points, plain language only.</span><span class="lng-th">กำหนดน้ำเสียง (เป็นทางการ, ลำลอง, กระชับ) และเพิ่มข้อจำกัดชัดเจน — จำนวนคำสูงสุด, ห้ามใช้ศัพท์เทคนิค, ห้าม bullet points, ใช้ภาษาเข้าใจง่ายเท่านั้น</span></p>
+      <div class="craft-eg">"<span class="lng-en">Formal tone, max 200 words, avoid technical jargon, no bullet points...</span><span class="lng-th">น้ำเสียงเป็นทางการ, ไม่เกิน 200 คำ, หลีกเลี่ยงศัพท์เทคนิค, ไม่มี bullet points...</span>"</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h3 style="margin-bottom:14px;"><span class="lng-en">Power Techniques</span><span class="lng-th">เทคนิคขั้นสูง</span></h3>
+
+  <div class="accordion">
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">🔗 <span class="lng-en">Chain-of-thought: "Think step by step"</span><span class="lng-th">Chain-of-thought: "คิดทีละขั้นตอน"</span> <span class="acc-arrow">▼</span></div>
+      <div class="acc-body"><span class="lng-en">Adding <em>"Think step by step"</em> or <em>"Reason through this before answering"</em> prompts Claude to break down its thinking — dramatically improving accuracy on logical, maths, or analytical problems.</span><span class="lng-th">การเพิ่ม <em>"คิดทีละขั้นตอน"</em> หรือ <em>"วิเคราะห์ก่อนตอบ"</em> กระตุ้นให้ Claude แยกแยะความคิด — เพิ่มความแม่นยำอย่างมากสำหรับปัญหาเชิงตรรกะ คณิตศาสตร์ หรือการวิเคราะห์</span></div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">📝 <span class="lng-en">Few-shot examples</span><span class="lng-th">ตัวอย่าง Few-shot</span> <span class="acc-arrow">▼</span></div>
+      <div class="acc-body"><span class="lng-en">Show Claude an example of the input/output pair you want. For instance: <em>"Input: 'Product arrived late.' → Output: 'We're sorry for the delay...'"</em> — then ask Claude to follow the same pattern for new cases.</span><span class="lng-th">แสดงตัวอย่างคู่ input/output ที่ต้องการให้ Claude เช่น <em>"Input: 'สินค้าถึงช้า' → Output: 'เราขออภัยสำหรับความล่าช้า...'"</em> — แล้วขอให้ Claude ทำตามรูปแบบเดิมสำหรับกรณีใหม่</span></div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">🔄 <span class="lng-en">Iterative refinement</span><span class="lng-th">การปรับปรุงแบบวนซ้ำ</span> <span class="acc-arrow">▼</span></div>
+      <div class="acc-body"><span class="lng-en">Don't expect perfection on the first try. Follow up: <em>"Make it shorter," "Less formal," "Add a call-to-action at the end."</em> Claude retains full context throughout a conversation.</span><span class="lng-th">อย่าคาดหวังความสมบูรณ์ในครั้งแรก ติดตามด้วย: <em>"ทำให้สั้นลง," "เป็นทางการน้อยลง," "เพิ่ม call-to-action ตอนท้าย"</em> Claude จดจำบริบทตลอดการสนทนา</span></div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">📌 <span class="lng-en">System prompts / Custom instructions</span><span class="lng-th">System prompt / คำสั่งถาวร</span> <span class="acc-arrow">▼</span></div>
+      <div class="acc-body"><span class="lng-en">In Projects (claude.ai), set a persistent <strong>system prompt</strong> that applies to every message in that project. Define a persona, set standing rules, or provide company context — once, not every time.</span><span class="lng-th">ใน Projects (claude.ai) ตั้ง <strong>system prompt</strong> ถาวรที่ใช้กับทุกข้อความในโปรเจกต์นั้น กำหนด persona, กฎเกณฑ์ถาวร หรือบริบทบริษัท — ครั้งเดียว ไม่ต้องทำซ้ำทุกครั้ง</span></div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">🎯 <span class="lng-en">Ask Claude to ask you questions</span><span class="lng-th">ให้ Claude ถามคำถามก่อน</span> <span class="acc-arrow">▼</span></div>
+      <div class="acc-body"><span class="lng-en">For complex tasks, try: <em>"Before you start, ask me any clarifying questions you need."</em> Claude will surface exactly what information it needs — and the answers you give will dramatically improve the output.</span><span class="lng-th">สำหรับงานซับซ้อน ลองพูดว่า: <em>"ก่อนเริ่ม ถามคำถามที่ต้องการความชัดเจนจากฉันก่อน"</em> Claude จะถามสิ่งที่ต้องการจริงๆ — และคำตอบของคุณจะเพิ่มคุณภาพผลลัพธ์อย่างมาก</span></div>
+    </div>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(4)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">6 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(6)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 6: QUICK TIPS ═══ -->
+<div class="section-panel" id="s6">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div>
+      <div class="section-tag tag-green"><span class="lng-en">Tips</span><span class="lng-th">เคล็ดลับ</span></div>
+      <h2><span class="lng-en">Quick Tips That Work Every Time</span><span class="lng-th">เคล็ดลับด่วนที่ได้ผลทุกครั้ง</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Small changes to how you phrase things make a big difference. These are the habits of experienced Claude users.</span><span class="lng-th">การเปลี่ยนแปลงเล็กน้อยในการพูดสร้างความแตกต่างได้มาก นี่คือนิสัยของผู้ใช้ Claude ที่มีประสบการณ์</span></p>
+
+  <div class="tips-grid">
+    <div class="tcard">
+      <div class="tnum">01</div>
+      <h3><span class="lng-en">Lead with a role</span><span class="lng-th">เริ่มด้วยบทบาท</span></h3>
+      <p><span class="lng-en">Starting with "You are a [expert]..." is the single fastest way to improve any response. It sets expertise level, tone, and approach in one sentence.</span><span class="lng-th">การเริ่มด้วย "คุณคือ [ผู้เชี่ยวชาญ]..." คือวิธีที่เร็วที่สุดในการปรับปรุงคำตอบ กำหนดระดับความเชี่ยวชาญ น้ำเสียง และแนวทางในประโยคเดียว</span></p>
+      <div class="eg"><span class="lng-en">You are a senior HR manager with experience handling difficult conversations. Help me write...</span><span class="lng-th">คุณคือผู้จัดการ HR อาวุโสที่มีประสบการณ์จัดการบทสนทนายาก ช่วยฉันเขียน...</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">02</div>
+      <h3><span class="lng-en">Set a hard length limit</span><span class="lng-th">กำหนดขีดจำกัดความยาว</span></h3>
+      <p><span class="lng-en">Claude tends to be thorough — sometimes too thorough. If you want brevity, say so explicitly.</span><span class="lng-th">Claude มักละเอียด — บางครั้งละเอียดเกินไป ถ้าต้องการความกระชับ บอกตรงๆ</span></p>
+      <div class="eg"><span class="lng-en">Summarize this in exactly 3 bullet points.
+Each bullet should be one sentence only.</span><span class="lng-th">สรุปสิ่งนี้เป็น bullet point ให้พอดี 3 ข้อ
+แต่ละข้อควรเป็นประโยคเดียวเท่านั้น</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">03</div>
+      <h3><span class="lng-en">Ask for multiple versions</span><span class="lng-th">ขอหลายเวอร์ชัน</span></h3>
+      <p><span class="lng-en">Can't decide on tone or approach? Ask Claude to write 2 or 3 versions. Seeing options side by side often makes the decision obvious.</span><span class="lng-th">ตัดสินใจไม่ได้เรื่องน้ำเสียงหรือแนวทาง? ขอให้ Claude เขียน 2 หรือ 3 เวอร์ชัน การเห็นตัวเลือกเคียงกันมักทำให้ตัดสินใจได้ง่ายขึ้น</span></p>
+      <div class="eg"><span class="lng-en">Give me 3 versions of this email:
+one formal, one friendly, one very brief.</span><span class="lng-th">ให้อีเมลนี้ 3 เวอร์ชัน:
+เป็นทางการ, เป็นกันเอง, และสั้นมาก</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">04</div>
+      <h3><span class="lng-en">Tell Claude what to leave out</span><span class="lng-th">บอกสิ่งที่ไม่ต้องการ</span></h3>
+      <p><span class="lng-en">"Don't include..." is one of the most underused tools. Ruling things out is often faster than describing what you want in more detail.</span><span class="lng-th">"อย่าใส่..." คือเครื่องมือที่ถูกใช้น้อยที่สุด การตัดสิ่งที่ไม่ต้องการมักเร็วกว่าการอธิบายสิ่งที่ต้องการ</span></p>
+      <div class="eg"><span class="lng-en">Don't use corporate jargon.
+Don't start with "I hope this email finds you well."
+Don't exceed 2 paragraphs.</span><span class="lng-th">อย่าใช้ภาษาองค์กร
+อย่าเริ่มด้วย "หวังว่าคุณจะสบายดี"
+อย่าเกิน 2 ย่อหน้า</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">05</div>
+      <h3><span class="lng-en">Keep editing in the same chat</span><span class="lng-th">แก้ไขในแชทเดิม</span></h3>
+      <p><span class="lng-en">You don't need to rewrite your prompt if the result isn't perfect. Tell Claude exactly what to adjust — it remembers the full conversation.</span><span class="lng-th">ไม่ต้องเขียน Prompt ใหม่ถ้าผลลัพธ์ยังไม่สมบูรณ์ บอก Claude ตรงๆ ว่าต้องปรับอะไร — มันจำบทสนทนาทั้งหมด</span></p>
+      <div class="eg"><span class="lng-en">Good, but the third paragraph is too long.
+Make the opening less formal.
+Keep everything else the same.</span><span class="lng-th">ดีแล้ว แต่ย่อหน้าที่สามยาวเกินไป
+ทำให้ประโยคเปิดเป็นทางการน้อยลง
+อย่างอื่นคงไว้เหมือนเดิม</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">06</div>
+      <h3><span class="lng-en">Give Claude a "hat" to wear</span><span class="lng-th">ให้ Claude "สวมหมวก" ใบอื่น</span></h3>
+      <p><span class="lng-en">Need a second opinion? Ask Claude to review your work from a specific perspective — your skeptical CFO, a first-time reader, a competitor.</span><span class="lng-th">ต้องการความเห็นที่สอง? ให้ Claude ตรวจงานจากมุมมองเฉพาะ เช่น CFO ขี้สงสัย, ผู้อ่านครั้งแรก, หรือคู่แข่ง</span></p>
+      <div class="eg"><span class="lng-en">Read this proposal as a skeptical CFO who
+cares only about ROI. What would you push back on?</span><span class="lng-th">อ่าน proposal นี้ในฐานะ CFO ขี้สงสัยที่
+สนใจแค่ ROI คุณจะโต้แย้งเรื่องอะไร?</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">07</div>
+      <h3><span class="lng-en">Break big tasks into steps</span><span class="lng-th">แบ่งงานใหญ่เป็นขั้นตอน</span></h3>
+      <p><span class="lng-en">For complex tasks, give Claude a plan to follow. "First X, then Y, then Z" produces far more structured output than one open-ended request.</span><span class="lng-th">สำหรับงานซับซ้อน ให้แผนที่ Claude ทำตาม "ก่อนอื่น X แล้ว Y สุดท้าย Z" ให้ผลลัพธ์มีโครงสร้างดีกว่าคำขอแบบเปิดกว้าง</span></p>
+      <div class="eg"><span class="lng-en">First, summarize the key findings in 3 points.
+Then, identify 2 risks.
+Finally, suggest one next step.</span><span class="lng-th">ขั้นแรก สรุปข้อค้นพบสำคัญ 3 ข้อ
+จากนั้น ระบุความเสี่ยง 2 อย่าง
+สุดท้าย เสนอขั้นตอนต่อไปหนึ่งอย่าง</span></div>
+    </div>
+    <div class="tcard">
+      <div class="tnum">08</div>
+      <h3><span class="lng-en">Paste the real content in</span><span class="lng-th">วางเนื้อหาจริงลงไปเลย</span></h3>
+      <p><span class="lng-en">If you're asking Claude to work on a specific document or email — paste it directly. Claude cannot see your files or screen unless you share the text.</span><span class="lng-th">ถ้าจะให้ Claude ทำงานกับเอกสารหรืออีเมลใดโดยเฉพาะ — วางข้อความลงตรงๆ Claude ไม่สามารถเห็นไฟล์หรือหน้าจอของคุณได้ถ้าไม่แชร์ข้อความ</span></p>
+      <div class="eg"><span class="lng-en">Here are the meeting notes:
+[paste text here]
+
+Please summarize the action items only.</span><span class="lng-th">นี่คือบันทึกการประชุม:
+[วางข้อความที่นี่]
+
+กรุณาสรุปเฉพาะ action items เท่านั้น</span></div>
+    </div>
+    <div class="tcard star">
+      <div class="tnum">★</div>
+      <h3><span class="lng-en">Not sure how to ask? Ask Claude to help you ask.</span><span class="lng-th">ไม่แน่ใจว่าจะถามยังไง? ให้ Claude ช่วยคิด Prompt</span></h3>
+      <p><span class="lng-en">Describe what you're trying to achieve, and ask Claude to help you write a better prompt. Claude knows what information it needs — and it will tell you.</span><span class="lng-th">อธิบายสิ่งที่ต้องการทำให้สำเร็จ แล้วให้ Claude ช่วยเขียน Prompt ที่ดีกว่า Claude รู้ว่าต้องการข้อมูลอะไร — และจะบอกคุณ</span></p>
+      <div class="eg"><span class="lng-en">I want you to help me with [describe your goal].
+I'm not sure how to phrase my request to get the best result.
+Can you suggest a good way to ask you for this?</span><span class="lng-th">ฉันต้องการให้คุณช่วยเรื่อง [อธิบายเป้าหมาย]
+ฉันไม่แน่ใจว่าจะขอยังไงให้ได้ผลที่ดีที่สุด
+คุณช่วยแนะนำวิธีที่ดีในการขอสิ่งนี้ได้ไหม?</span></div>
+    </div>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(5)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">7 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(7)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 7: BEFORE & AFTER ═══ -->
+<div class="section-panel" id="s7">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div>
+      <div class="section-tag tag-orange"><span class="lng-en">Examples</span><span class="lng-th">ตัวอย่าง</span></div>
+      <h2><span class="lng-en">Before &amp; After</span><span class="lng-th">ก่อนและหลัง</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">See how the same request evolves from vague to excellent — and how each addition improves the result. Pick a scenario below.</span><span class="lng-th">ดูว่าคำขอเดียวกันพัฒนาจากคลุมเครือสู่ยอดเยี่ยมได้อย่างไร และแต่ละการเพิ่มเติมช่วยปรับปรุงผลลัพธ์ เลือกสถานการณ์ด้านล่าง</span></p>
+
+  <div class="scen-picker">
+    <button class="scen-btn active" onclick="switchScenario('email', this)"><span class="lng-en">Writing an email</span><span class="lng-th">เขียนอีเมล</span></button>
+    <button class="scen-btn" onclick="switchScenario('summary', this)"><span class="lng-en">Summarizing a document</span><span class="lng-th">สรุปเอกสาร</span></button>
+    <button class="scen-btn" onclick="switchScenario('meeting', this)"><span class="lng-en">Preparing for a meeting</span><span class="lng-th">เตรียมการประชุม</span></button>
+  </div>
+
+  <div id="scen-out"></div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(6)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">8 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(8)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8: PROMPT BUILDER ═══ -->
+<div class="section-panel" id="s8">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <div>
+      <div class="section-tag tag-green"><span class="lng-en">Interactive</span><span class="lng-th">โต้ตอบ</span></div>
+      <h2><span class="lng-en">Prompt Builder</span><span class="lng-th">สร้าง Prompt</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Fill in the fields below to assemble a structured, high-quality prompt. The more you fill in, the higher your quality score — and the better Claude's response will be.</span><span class="lng-th">กรอกข้อมูลในช่องด้านล่างเพื่อสร้าง Prompt มีโครงสร้างและคุณภาพสูง ยิ่งกรอกมาก คะแนนคุณภาพยิ่งสูง — และคำตอบของ Claude จะยิ่งดีขึ้น</span></p>
+
+  <div class="builder-layout">
+    <!-- Form -->
+    <div class="builder-form">
+      <h3><span class="lng-en">Build Your Prompt</span><span class="lng-th">สร้าง Prompt ของคุณ</span></h3>
+
+      <div class="field">
+        <label><span class="badge badge-do"><span class="lng-en">Always</span><span class="lng-th">ทำทุกครั้ง</span></span> <span class="lng-en">What do you want Claude to do?</span><span class="lng-th">ต้องการให้ Claude ทำอะไร?</span></label>
+        <div class="hint"><span class="lng-en">Be specific. Write, summarise, compare, draft, analyse, review…?</span><span class="lng-th">ระบุให้ชัด เขียน, สรุป, เปรียบเทียบ, ร่าง, วิเคราะห์, ตรวจสอบ…?</span></div>
+        <textarea id="b-task" rows="3" placeholder="e.g. Write a professional email to a client explaining a 2-week project delay." oninput="buildPreview()"></textarea>
+      </div>
+
+      <div class="field">
+        <label><span class="badge badge-do"><span class="lng-en">Always</span><span class="lng-th">ทำทุกครั้ง</span></span> <span class="lng-en">Background &amp; context</span><span class="lng-th">ข้อมูลพื้นหลังและบริบท</span></label>
+        <div class="hint"><span class="lng-en">What does Claude need to know about the situation or people involved?</span><span class="lng-th">Claude ต้องรู้อะไรเกี่ยวกับสถานการณ์หรือบุคคลที่เกี่ยวข้อง?</span></div>
+        <textarea id="b-ctx" rows="3" placeholder="e.g. The delay is due to unexpected data issues. The client is Sarah Chen at Acme Corp — we've worked together for 2 years." oninput="buildPreview()"></textarea>
+      </div>
+
+      <div class="field">
+        <label><span class="badge badge-do"><span class="lng-en">Always</span><span class="lng-th">ทำทุกครั้ง</span></span> <span class="lng-en">How should the output look?</span><span class="lng-th">ผลลัพธ์ควรมีรูปแบบอย่างไร?</span></label>
+        <div class="hint"><span class="lng-en">Length, structure, bullet points or prose, table, email format…?</span><span class="lng-th">ความยาว โครงสร้าง bullet points หรือย่อหน้า ตาราง รูปแบบอีเมล…?</span></div>
+        <textarea id="b-format" rows="2" placeholder="e.g. Keep it under 150 words. One short paragraph per point. No bullet points." oninput="buildPreview()"></textarea>
+      </div>
+
+      <hr class="field-divider">
+
+      <div class="field">
+        <label><span class="badge badge-try"><span class="lng-en">Recommended</span><span class="lng-th">แนะนำ</span></span> <span class="lng-en">Give Claude a role</span><span class="lng-th">กำหนดบทบาทให้ Claude</span></label>
+        <div class="hint"><span class="lng-en">Who should Claude be? e.g. "You are a senior account manager…"</span><span class="lng-th">Claude ควรเป็นใคร? เช่น "คุณคือ Account Manager อาวุโส…"</span></div>
+        <textarea id="b-role" rows="2" placeholder="e.g. You are a senior account manager at a professional services firm." oninput="buildPreview()"></textarea>
+      </div>
+
+      <div class="field">
+        <label><span class="badge badge-try"><span class="lng-en">Recommended</span><span class="lng-th">แนะนำ</span></span> <span class="lng-en">Who is the audience?</span><span class="lng-th">กลุ่มผู้อ่านคือใคร?</span></label>
+        <div class="hint"><span class="lng-en">Who will read this? What do they know? What do they care about?</span><span class="lng-th">ใครจะอ่านสิ่งนี้? พวกเขารู้อะไร? พวกเขาสนใจอะไร?</span></div>
+        <input type="text" id="b-audience" placeholder="e.g. A non-technical client who values honesty and clear communication." oninput="buildPreview()">
+      </div>
+
+      <div class="field">
+        <label><span class="badge badge-try"><span class="lng-en">Recommended</span><span class="lng-th">แนะนำ</span></span> <span class="lng-en">Tone or style</span><span class="lng-th">น้ำเสียงหรือสไตล์</span></label>
+        <div class="hint"><span class="lng-en">e.g. formal, friendly, confident, reassuring, concise, direct…</span><span class="lng-th">เช่น เป็นทางการ, เป็นกันเอง, มั่นใจ, ให้ความมั่นใจ, กระชับ, ตรงไปตรงมา…</span></div>
+        <input type="text" id="b-tone" placeholder="e.g. Professional but warm. Apologetic without being defensive." oninput="buildPreview()">
+      </div>
+
+      <label class="toggle-row">
+        <input type="checkbox" id="tog-avoid" onchange="toggleOpt('avoid'); buildPreview()">
+        <span class="badge badge-try"><span class="lng-en">Optional</span><span class="lng-th">ไม่บังคับ</span></span> <span class="lng-en">Things to avoid</span><span class="lng-th">สิ่งที่ควรหลีกเลี่ยง</span>
+      </label>
+      <div id="wrap-avoid" style="display:none" class="field">
+        <div class="hint"><span class="lng-en">Anything Claude should not do, say, or include?</span><span class="lng-th">มีสิ่งใดที่ Claude ไม่ควรทำ พูด หรือรวมไว้?</span></div>
+        <textarea id="b-avoid" rows="2" placeholder="e.g. Don't use corporate jargon. Don't make excuses — focus on solutions." oninput="buildPreview()"></textarea>
+      </div>
+
+      <label class="toggle-row" style="margin-top:4px;">
+        <input type="checkbox" id="tog-example" onchange="toggleOpt('example'); buildPreview()">
+        <span class="badge badge-try"><span class="lng-en">Optional</span><span class="lng-th">ไม่บังคับ</span></span> <span class="lng-en">Paste an example to match</span><span class="lng-th">วางตัวอย่างสไตล์ที่ต้องการ</span>
+      </label>
+      <div id="wrap-example" style="display:none" class="field">
+        <div class="hint"><span class="lng-en">Paste a message or email that shows the style you want Claude to match.</span><span class="lng-th">วางข้อความหรืออีเมลที่แสดงสไตล์ที่ต้องการให้ Claude เลียนแบบ</span></div>
+        <textarea id="b-example" rows="4" placeholder="Paste an example of the style, tone, or format you're going for." oninput="buildPreview()"></textarea>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="builder-preview" style="position:sticky;top:20px;">
+      <h3><span class="lng-en">Your Prompt</span><span class="lng-th">Prompt ของคุณ</span></h3>
+
+      <div class="quality-wrap">
+        <div class="quality-track"><div class="quality-fill" id="qualityFill"></div></div>
+        <span class="quality-label" id="qualityLabel">0% — <span class="lng-en">start typing</span><span class="lng-th">เริ่มพิมพ์</span></span>
+      </div>
+
+      <div class="chip-strip" id="chipStrip">
+        <span class="chip" id="chip-task"><span class="lng-en">Task</span><span class="lng-th">งาน</span></span>
+        <span class="chip" id="chip-ctx"><span class="lng-en">Context</span><span class="lng-th">บริบท</span></span>
+        <span class="chip" id="chip-format"><span class="lng-en">Format</span><span class="lng-th">รูปแบบ</span></span>
+        <span class="chip" id="chip-role"><span class="lng-en">Role</span><span class="lng-th">บทบาท</span></span>
+        <span class="chip" id="chip-audience"><span class="lng-en">Audience</span><span class="lng-th">ผู้อ่าน</span></span>
+        <span class="chip" id="chip-tone"><span class="lng-en">Tone</span><span class="lng-th">น้ำเสียง</span></span>
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <span class="preview-empty"><span class="lng-en">Your assembled prompt will appear here as you fill in the fields…</span><span class="lng-th">Prompt ที่สร้างจะปรากฏที่นี่เมื่อคุณกรอกข้อมูล…</span></span>
+      </div>
+
+      <div class="builder-actions">
+        <button class="btn-copy" id="copyBtn" onclick="copyPrompt()"><span class="lng-en">Copy Prompt</span><span class="lng-th">คัดลอก Prompt</span></button>
+        <button class="btn-reset" onclick="resetBuilder()" title="Clear all fields and start a new prompt">↺ <span class="lng-en">Start Fresh</span><span class="lng-th">เริ่มใหม่</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip purple" style="margin-top:20px;">
+    <div class="tip-icon">💡</div>
+    <p><span class="lng-en">You don't need to fill in every field — even adding just a <strong>Role</strong> and <strong>Format</strong> to your task description often doubles the quality of the output. The builder shows your progress as you go.</span><span class="lng-th">ไม่จำเป็นต้องกรอกทุกช่อง — แค่เพิ่ม <strong>บทบาท</strong> และ <strong>รูปแบบ</strong> ก็มักเพิ่มคุณภาพผลลัพธ์ได้เป็นสองเท่า ตัวสร้างจะแสดงความคืบหน้าของคุณไปพร้อมกัน</span></p>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(7)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">9 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(9)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 9: TOKENS ═══ -->
+<div class="section-panel" id="s9">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <div>
+      <div class="section-tag tag-orange"><span class="lng-en">Technical</span><span class="lng-th">เทคนิค</span></div>
+      <h2><span class="lng-en">Tokens &amp; Context Window</span><span class="lng-th">Token และ Context Window</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Understanding tokens is the key to understanding Claude's limits — and why long conversations sometimes seem to "forget" earlier messages.</span><span class="lng-th">การเข้าใจ Token คือกุญแจสำคัญในการเข้าใจข้อจำกัดของ Claude — และเหตุที่การสนทนายาวบางครั้งดูเหมือน "ลืม" ข้อความก่อนหน้า</span></p>
+
+  <div class="cards cards-2" style="margin:24px 0;">
+    <div class="card">
+      <h3>🔤 <span class="lng-en">What is a token?</span><span class="lng-th">Token คืออะไร?</span></h3>
+      <p><span class="lng-en">Tokens are the units Claude reads in. Roughly:</span><span class="lng-th">Token คือหน่วยที่ Claude อ่าน โดยประมาณ:</span></p>
+      <ul class="sl">
+        <li><strong>~4 <span class="lng-en">characters</span><span class="lng-th">ตัวอักษร</span></strong> = 1 token</li>
+        <li><strong>~0.75 <span class="lng-en">words</span><span class="lng-th">คำ</span></strong> = 1 token</li>
+        <li><strong>1 <span class="lng-en">page of text</span><span class="lng-th">หน้าข้อความ</span></strong> ≈ 500–750 tokens</li>
+        <li><strong>1 <span class="lng-en">typical message</span><span class="lng-th">ข้อความทั่วไป</span></strong> ≈ 200–800 tokens</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📦 <span class="lng-en">What is a context window?</span><span class="lng-th">Context window คืออะไร?</span></h3>
+      <p><span class="lng-en">The context window is how much Claude can "see" at once — everything inside is visible; everything outside is forgotten.</span><span class="lng-th">Context window คือขนาดที่ Claude สามารถ "มองเห็น" ได้พร้อมกัน — ทุกอย่างในนั้นมองเห็นได้ ทุกอย่างนอกนั้นถูกลืม</span></p>
+      <ul class="sl">
+        <li><span class="lng-en">Includes: system prompt + all messages + response</span><span class="lng-th">รวม: system prompt + ข้อความทั้งหมด + คำตอบ</span></li>
+        <li>Claude Sonnet 4: <strong>200,000 tokens</strong> (~150,000 <span class="lng-en">words</span><span class="lng-th">คำ</span>)</li>
+        <li><span class="lng-en">When full, older messages may be dropped</span><span class="lng-th">เมื่อเต็ม ข้อความเก่าอาจถูกตัดออก</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px;"><span class="lng-en">Simulate conversation length</span><span class="lng-th">จำลองความยาวการสนทนา</span></h3>
+  <div class="token-section">
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-size:0.85rem;font-weight:600;">200,000 token window</span>
+      <span style="font-size:0.8rem;color:var(--text2);" id="tokenPct">Move the slider →</span>
+    </div>
+    <div style="font-size:0.75rem;color:var(--text2);margin-bottom:6px;">System prompt</div>
+    <div class="token-bar-wrap"><div class="token-bar sys" id="bar-sys" style="width:5%">System</div></div>
+    <div style="font-size:0.75rem;color:var(--text2);margin:6px 0 6px;">Conversation so far</div>
+    <div class="token-bar-wrap"><div class="token-bar usr" id="bar-usr" style="width:20%">Conversation</div></div>
+    <div style="font-size:0.75rem;color:var(--text2);margin:6px 0 6px;">Claude's response</div>
+    <div class="token-bar-wrap"><div class="token-bar res" id="bar-res" style="width:10%">Response</div></div>
+
+    <div style="margin-top:18px;">
+      <label style="font-size:0.82rem;color:var(--text2);">Conversation length: <strong id="convLen">Short</strong></label>
+      <input type="range" min="0" max="100" value="20" id="tokenSlider" oninput="updateTokens(this.value)"
+        style="width:100%;margin-top:8px;accent-color:var(--accent);">
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;font-size:0.8rem;">
+      <div style="background:rgba(72,202,228,0.08);padding:10px;border-radius:8px;">
+        <div style="color:var(--teal);font-weight:700;margin-bottom:4px;">System Prompt</div>
+        <div id="sys-count" style="color:var(--text);">~1,000 tokens</div>
+      </div>
+      <div style="background:rgba(244,162,97,0.08);padding:10px;border-radius:8px;">
+        <div style="color:var(--orange);font-weight:700;margin-bottom:4px;">Conversation</div>
+        <div id="usr-count" style="color:var(--text);">~40,000 tokens</div>
+      </div>
+      <div style="background:rgba(82,227,161,0.08);padding:10px;border-radius:8px;">
+        <div style="color:var(--green);font-weight:700;margin-bottom:4px;">Response</div>
+        <div id="res-count" style="color:var(--text);">~20,000 tokens</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 12px;"><span class="lng-en">Practical Token Tips</span><span class="lng-th">เคล็ดลับการใช้ Token จริง</span></h3>
+  <div class="accordion">
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">🧹 Managing long conversations <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">Start a new conversation when your task shifts significantly. Long threads accumulate tokens fast — old context can interfere with new instructions. Use <strong>Projects</strong> with a system prompt to maintain persistent context without filling the window.</div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">📄 Uploading large files <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">Pasting an entire document uses tokens fast. Upload files as attachments instead — Claude reads the relevant parts without burning your conversation tokens on every line.</div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">💰 Cost and tokens (API users) <span class="acc-arrow">▼</span></div>
+      <div class="acc-body">The API charges per <strong>input token</strong> (what Claude reads) and <strong>output token</strong> (what Claude writes). Output costs more. For high-volume tasks, pick the cheapest model that meets quality requirements, keep system prompts lean, and use <strong>prompt caching</strong> to avoid re-billing repeated context.</div>
+    </div>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(8)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">10 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(10)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 10: ADVANCED ═══ -->
+<div class="section-panel" id="s10">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <div>
+      <div class="section-tag tag-teal"><span class="lng-en">Advanced</span><span class="lng-th">ขั้นสูง</span></div>
+      <h2><span class="lng-en">Advanced Features &amp; Power Tips</span><span class="lng-th">ฟีเจอร์ขั้นสูงและเคล็ดลับระดับ Pro</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">These features separate power users from beginners. Master Projects, memory, artefacts, and agentic workflows.</span><span class="lng-th">ฟีเจอร์เหล่านี้คือสิ่งที่แยกผู้ใช้ขั้นสูงออกจากมือใหม่ เชี่ยวชาญ Projects, Artefacts และ Agentic workflow</span></p>
+
+  <div class="cards cards-2" style="margin:24px 0;">
+    <div class="card card-al">
+      <div class="card-icon">📁</div>
+      <h3>Projects</h3>
+      <p><span class="lng-en">Persistent workspaces on claude.ai. Each project has its own:</span><span class="lng-th">พื้นที่ทำงานถาวรบน claude.ai แต่ละโปรเจกต์มี:</span></p>
+      <ul class="sl">
+        <li><strong>System prompt</strong> — <span class="lng-en">standing context</span><span class="lng-th">บริบทถาวร</span></li>
+        <li><strong><span class="lng-en">Knowledge files</span><span class="lng-th">ไฟล์ความรู้</span></strong> — <span class="lng-en">docs Claude can reference</span><span class="lng-th">เอกสารที่ Claude อ้างอิงได้</span></li>
+        <li><strong><span class="lng-en">Chat history</span><span class="lng-th">ประวัติการสนทนา</span></strong> — <span class="lng-en">persists between sessions</span><span class="lng-th">คงอยู่ระหว่าง session</span></li>
+        <li><strong>Plugins</strong> — <span class="lng-en">tools active for that project</span><span class="lng-th">เครื่องมือที่ใช้งานในโปรเจกต์</span></li>
+      </ul>
+    </div>
+    <div class="card card-tl">
+      <div class="card-icon">📎</div>
+      <h3>Artefacts</h3>
+      <p><span class="lng-en">When Claude generates code, documents, or structured data, it creates an <strong>Artefact</strong> — a rendered, downloadable output in a side panel. Great for:</span><span class="lng-th">เมื่อ Claude สร้างโค้ด เอกสาร หรือข้อมูลมีโครงสร้าง จะสร้าง <strong>Artefact</strong> — ผลลัพธ์ที่แสดงผลและดาวน์โหลดได้ในแผงด้านข้าง เหมาะสำหรับ:</span></p>
+      <ul class="sl">
+        <li><span class="lng-en">HTML / React component previews</span><span class="lng-th">ตัวอย่าง HTML / React component</span></li>
+        <li><span class="lng-en">Markdown documents</span><span class="lng-th">เอกสาร Markdown</span></li>
+        <li><span class="lng-en">SVG diagrams</span><span class="lng-th">แผนภาพ SVG</span></li>
+        <li><span class="lng-en">CSV / JSON data files</span><span class="lng-th">ไฟล์ข้อมูล CSV / JSON</span></li>
+      </ul>
+    </div>
+    <div class="card card-ol">
+      <div class="card-icon">🔁</div>
+      <h3><span class="lng-en">Agentic Loops</span><span class="lng-th">การทำงานแบบ Agentic</span></h3>
+      <p><span class="lng-en">Claude Code and Cowork can run autonomous multi-step loops — planning, executing, checking results, and adjusting. Best used with a clear goal and explicit stop conditions.</span><span class="lng-th">Claude Code และ Cowork สามารถรันวงวนหลายขั้นตอนแบบอัตโนมัติ — วางแผน ดำเนินการ ตรวจสอบผล และปรับแก้ เหมาะสำหรับเป้าหมายที่ชัดเจน</span></p>
+      <div class="tip warn" style="margin-top:12px;padding:10px;">
+        <div class="tip-icon">⚠️</div>
+        <p style="font-size:0.8rem;"><span class="lng-en">Always review what an agent will do before approving irreversible actions.</span><span class="lng-th">ตรวจสอบสิ่งที่ agent จะทำเสมอก่อนอนุมัติการกระทำที่ย้อนกลับไม่ได้</span></p>
+      </div>
+    </div>
+    <div class="card card-gl">
+      <div class="card-icon">📊</div>
+      <h3><span class="lng-en">File Analysis</span><span class="lng-th">การวิเคราะห์ไฟล์</span></h3>
+      <p><span class="lng-en">Claude can read and reason over uploaded files:</span><span class="lng-th">Claude อ่านและวิเคราะห์ไฟล์ที่อัปโหลดได้:</span></p>
+      <ul class="sl">
+        <li><span class="lng-en">PDFs, Word docs, spreadsheets</span><span class="lng-th">PDF, Word, สเปรดชีต</span></li>
+        <li><span class="lng-en">Images (screenshots, charts, diagrams)</span><span class="lng-th">รูปภาพ (ภาพหน้าจอ กราฟ แผนภาพ)</span></li>
+        <li><span class="lng-en">Code files of any language</span><span class="lng-th">ไฟล์โค้ดทุกภาษา</span></li>
+        <li><span class="lng-en">Ask questions directly about content</span><span class="lng-th">ถามคำถามเกี่ยวกับเนื้อหาโดยตรง</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h3 style="margin-bottom:14px;"><span class="lng-en">Top 10 Power User Tips</span><span class="lng-th">10 เคล็ดลับสำหรับผู้ใช้ขั้นสูง</span></h3>
+  <ol class="sl" style="line-height:1.9;">
+    <li><strong>Use Projects</strong> <span class="lng-en">for recurring workstreams — set the system prompt once, not every time.</span><span class="lng-th">สำหรับงานที่ทำซ้ำ — ตั้ง system prompt ครั้งเดียว ไม่ต้องทำทุกครั้ง</span></li>
+    <li><strong><span class="lng-en">Paste error messages verbatim</span><span class="lng-th">วางข้อความ error ทั้งหมด</span></strong> — <span class="lng-en">Claude diagnoses them better with the exact text.</span><span class="lng-th">Claude วิเคราะห์ได้แม่นยำกว่าเมื่อมีข้อความครบถ้วน</span></li>
+    <li><strong><span class="lng-en">Ask Claude to ask you questions</span><span class="lng-th">ให้ Claude ถามคำถามก่อน</span></strong> — <span class="lng-en">"Before answering, ask me any clarifying questions you need."</span><span class="lng-th">"ก่อนตอบ ถามคำถามที่ต้องการความชัดเจนจากฉันก่อน"</span></li>
+    <li><strong><span class="lng-en">Request multiple options</span><span class="lng-th">ขอหลายตัวเลือก</span></strong> — <span class="lng-en">"Give me 3 approaches with pros/cons of each."</span><span class="lng-th">"ให้ 3 แนวทางพร้อมข้อดีข้อเสียของแต่ละแนวทาง"</span></li>
+    <li><strong><span class="lng-en">Use Claude to improve your own prompts</span><span class="lng-th">ให้ Claude ปรับปรุง Prompt ของคุณ</span></strong> — <span class="lng-en">"Rewrite this prompt to be more effective."</span><span class="lng-th">"เขียน Prompt นี้ใหม่ให้มีประสิทธิภาพมากขึ้น"</span></li>
+    <li><strong><span class="lng-en">Specify what you don't want</span><span class="lng-th">ระบุสิ่งที่ไม่ต้องการ</span></strong> — <span class="lng-en">negative constraints are powerful style controls.</span><span class="lng-th">ข้อจำกัดเชิงลบเป็นเครื่องมือควบคุมสไตล์ที่ทรงพลัง</span></li>
+    <li><strong><span class="lng-en">Give Claude permission to push back</span><span class="lng-th">ให้ Claude โต้แย้งได้</span></strong> — <span class="lng-en">"Tell me if you think there's a better approach."</span><span class="lng-th">"บอกฉันถ้าคุณคิดว่ามีแนวทางที่ดีกว่า"</span></li>
+    <li><strong><span class="lng-en">Use structured outputs for automation</span><span class="lng-th">ใช้ผลลัพธ์มีโครงสร้างสำหรับ automation</span></strong> — <span class="lng-en">"Return a JSON object with keys: title, summary, tags."</span><span class="lng-th">"ส่งคืน JSON object ที่มี keys: title, summary, tags"</span></li>
+    <li><strong><span class="lng-en">Set a word limit</span><span class="lng-th">กำหนดจำนวนคำ</span></strong> — <span class="lng-en">Claude naturally writes more than needed; a limit forces concision.</span><span class="lng-th">Claude มักเขียนมากกว่าที่จำเป็น การกำหนดจำนวนบังคับให้กระชับ</span></li>
+    <li><strong><span class="lng-en">Reference earlier parts of a conversation</span><span class="lng-th">อ้างถึงส่วนก่อนหน้าในบทสนทนา</span></strong> — <span class="lng-en">"Going back to the analysis you did 3 messages ago…"</span><span class="lng-th">"กลับไปที่การวิเคราะห์ที่คุณทำเมื่อ 3 ข้อความที่แล้ว…"</span></li>
+  </ol>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(9)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">11 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(11)"><span class="lng-en">Next</span><span class="lng-th">ถัดไป</span> →</button>
+  </div>
+</div>
+
+<!-- ═══ SECTION 11: QUIZ ═══ -->
+<div class="section-panel" id="s11">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <div>
+      <div class="section-tag tag-green"><span class="lng-en">Quiz</span><span class="lng-th">ทดสอบ</span></div>
+      <h2><span class="lng-en">Knowledge Check</span><span class="lng-th">ทดสอบความรู้</span></h2>
+    </div>
+  </div>
+
+  <p class="lead"><span class="lng-en">Answer all 7 questions to get your score. Click an option to lock in your answer — you can only answer each question once.</span><span class="lng-th">ตอบคำถามทั้ง 7 ข้อเพื่อดูคะแนน คลิกตัวเลือกเพื่อยืนยันคำตอบ — ตอบได้ครั้งเดียวต่อข้อ</span></p>
+
+  <div class="quiz-q" id="q1">
+    <h3><span class="lng-en">1. You need Claude to browse the web and research competitor pricing across 5 websites. Which interface should you use?</span><span class="lng-th">1. คุณต้องการให้ Claude ค้นหาข้อมูลราคาของคู่แข่งจาก 5 เว็บไซต์ ควรใช้อินเทอร์เฟสใด?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q1',false,'Chat has no web browsing capability — it only uses its training data. / Chat ไม่มีความสามารถในการท่องเว็บ — ใช้แค่ข้อมูลจากการฝึก')">💬 Chat (claude.ai)</div>
+      <div class="quiz-opt" onclick="answer(this,'q1',true,'Cowork with the web search plugin can browse live web pages and gather real-time data. / Cowork พร้อม web search plugin สามารถเรียกดูหน้าเว็บสดและรวบรวมข้อมูลแบบเรียลไทม์')">🤝 Cowork <span class="lng-en">with web search plugin</span><span class="lng-th">พร้อม web search plugin</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q1',false,'Claude Code is designed for coding in your local filesystem, not web browsing. / Claude Code ออกแบบมาสำหรับโค้ดในระบบไฟล์ของคุณ ไม่ใช่การท่องเว็บ')">💻 Claude Code CLI</div>
+    </div>
+    <div class="quiz-feedback" id="fb-q1"></div>
+  </div>
+
+  <div class="quiz-q" id="q2">
+    <h3><span class="lng-en">2. Approximately how many tokens is one A4 page of text?</span><span class="lng-th">2. หน้า A4 หนึ่งหน้ามีประมาณกี่ token?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q2',false,'Too few — a page of text is roughly 500–750 tokens. / น้อยเกินไป — หนึ่งหน้ามีประมาณ 500-750 token')">~100 tokens</div>
+      <div class="quiz-opt" onclick="answer(this,'q2',true,'Correct! A4 pages average ~500–750 tokens — about 0.75 words per token. / ถูกต้อง! หน้า A4 มีเฉลี่ย ~500-750 token — ประมาณ 0.75 คำต่อ token')">~500–750 tokens</div>
+      <div class="quiz-opt" onclick="answer(this,'q2',false,'That would be a very dense document — typical prose is 500–750 tokens per page. / นั่นจะเป็นเอกสารที่หนาแน่นมาก — ข้อความทั่วไปมี 500-750 token ต่อหน้า')">~5,000 tokens</div>
+    </div>
+    <div class="quiz-feedback" id="fb-q2"></div>
+  </div>
+
+  <div class="quiz-q" id="q3">
+    <h3><span class="lng-en">3. Which addition to a prompt most improves Claude's logical reasoning on a complex problem?</span><span class="lng-th">3. สิ่งใดที่เพิ่มเข้าไปใน Prompt ช่วยเพิ่มการคิดเชิงตรรกะของ Claude ได้มากที่สุด?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q3',false,'Tone helps style, but doesn\'t improve reasoning quality. / น้ำเสียงช่วยสไตล์ แต่ไม่ช่วยเพิ่มคุณภาพการคิดวิเคราะห์')"><span class="lng-en">Use a formal tone</span><span class="lng-th">ใช้น้ำเสียงเป็นทางการ</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q3',false,'Asking for brevity reduces reasoning quality on complex tasks. / การขอให้กระชับลดคุณภาพการคิดวิเคราะห์สำหรับงานซับซ้อน')"><span class="lng-en">Keep it short</span><span class="lng-th">ขอให้กระชับ</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q3',true,'Chain-of-thought prompting consistently improves accuracy on analytical and logical tasks. / Chain-of-thought prompting เพิ่มความแม่นยำสำหรับงานวิเคราะห์และตรรกะสม่ำเสมอ')"><span class="lng-en">Think step by step</span><span class="lng-th">คิดทีละขั้นตอน</span></div>
+    </div>
+    <div class="quiz-feedback" id="fb-q3"></div>
+  </div>
+
+  <div class="quiz-q" id="q4">
+    <h3><span class="lng-en">4. What is the main advantage of the Desktop app over the Web app?</span><span class="lng-th">4. ข้อได้เปรียบหลักของแอปเดสก์ท็อปเมื่อเทียบกับเว็บแอปคืออะไร?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q4',false,'Both apps access the same Claude models — the desktop app does not use a stronger model. / ทั้งสองแอปใช้โมเดล Claude เดียวกัน — แอปเดสก์ท็อปไม่ได้ใช้โมเดลที่แข็งแกร่งกว่า')"><span class="lng-en">It uses a smarter AI model</span><span class="lng-th">ใช้โมเดล AI ที่ฉลาดกว่า</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q4',true,'The Desktop app can see your screen (with permission) and be triggered by a global hotkey from any application. / แอปเดสก์ท็อปมองเห็นหน้าจอได้ (ต้องอนุญาต) และเรียกใช้ด้วยปุ่มลัดจากทุกแอป')"><span class="lng-en">Screen awareness and global hotkey</span><span class="lng-th">การมองเห็นหน้าจอและปุ่มลัดทั่วระบบ</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q4',false,'Both apps share the same Projects, conversation history, and plugins via your account. / ทั้งสองแอปแชร์ Projects ประวัติ และ plugins เดียวกันผ่านบัญชีของคุณ')"><span class="lng-en">It supports Projects and plugins</span><span class="lng-th">รองรับ Projects และ plugins</span></div>
+    </div>
+    <div class="quiz-feedback" id="fb-q4"></div>
+  </div>
+
+  <div class="quiz-q" id="q5">
+    <h3><span class="lng-en">5. In the CRAFT framework, what does the "F" stand for?</span><span class="lng-th">5. ในกรอบ CRAFT ตัว "F" ย่อมาจากอะไร?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q5',false,'Feedback is not part of CRAFT — the F stands for Format. / Feedback ไม่ใช่ส่วนหนึ่งของ CRAFT — F ย่อมาจาก Format')"><span class="lng-en">Feedback</span><span class="lng-th">Feedback (ข้อเสนอแนะ)</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q5',true,'Format — specifying how you want the output structured (table, bullets, JSON, prose, etc.) / Format — ระบุโครงสร้างผลลัพธ์ที่ต้องการ (ตาราง, bullets, JSON, ย่อหน้า ฯลฯ)')"><span class="lng-en">Format</span><span class="lng-th">Format (รูปแบบ)</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q5',false,'Formality relates to tone (the T in CRAFT), not the F. / ความเป็นทางการเกี่ยวข้องกับน้ำเสียง (T ใน CRAFT) ไม่ใช่ F')"><span class="lng-en">Formality</span><span class="lng-th">Formality (ความเป็นทางการ)</span></div>
+    </div>
+    <div class="quiz-feedback" id="fb-q5"></div>
+  </div>
+
+  <div class="quiz-q" id="q6">
+    <h3><span class="lng-en">6. When should you choose Claude Opus over Sonnet?</span><span class="lng-th">6. ควรเลือก Claude Opus แทน Sonnet เมื่อใด?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q6',false,'Haiku is faster and cheaper for simple tasks — not Opus. / Haiku เร็วและถูกกว่าสำหรับงานง่าย ไม่ใช่ Opus')"><span class="lng-en">For quick, simple tasks where speed matters</span><span class="lng-th">สำหรับงานง่ายรวดเร็วที่ต้องการความเร็ว</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q6',false,'Sonnet handles most plugin tasks well — model tier is not the deciding factor. / Sonnet จัดการงาน plugin ส่วนใหญ่ได้ดี — ระดับโมเดลไม่ใช่ปัจจัยตัดสิน')"><span class="lng-en">When using Cowork plugins</span><span class="lng-th">เมื่อใช้ Cowork plugins</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q6',true,'Opus excels at deep reasoning and nuanced analysis. Default to Sonnet and upgrade only when you need it. / Opus เก่งด้านการคิดวิเคราะห์ลึกและละเอียด ใช้ Sonnet เป็นหลักและอัปเกรดเมื่อจำเป็น')"><span class="lng-en">When Sonnet hits its limits on complex reasoning</span><span class="lng-th">เมื่อ Sonnet ถึงขีดจำกัดในการวิเคราะห์ซับซ้อน</span></div>
+    </div>
+    <div class="quiz-feedback" id="fb-q6"></div>
+  </div>
+
+  <div class="quiz-q" id="q7">
+    <h3><span class="lng-en">7. You wrote a prompt and Claude's response was good but too long and too formal. What's the best next step?</span><span class="lng-th">7. คุณเขียน Prompt และคำตอบของ Claude ดีแต่ยาวและเป็นทางการเกินไป ขั้นตอนที่ดีที่สุดคืออะไร?</span></h3>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="answer(this,'q7',false,'Rewriting loses the context of what Claude already understood. It\'s faster to refine. / การเขียนใหม่ทำให้สูญเสียบริบทที่ Claude เข้าใจแล้ว การปรับแต่งเร็วกว่า')"><span class="lng-en">Rewrite the entire prompt from scratch</span><span class="lng-th">เขียน Prompt ใหม่ทั้งหมดจากศูนย์</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q7',true,'Claude remembers the full conversation. Just tell it what to fix — shorter and less formal is a perfect refinement. / Claude จำบทสนทนาทั้งหมด แค่บอกสิ่งที่ต้องแก้ไข — สั้นลงและเป็นทางการน้อยลงคือคำสั่งปรับแต่งที่สมบูรณ์แบบ')"><span class="lng-en">Continue the conversation: "Shorten it and make it less formal"</span><span class="lng-th">สนทนาต่อ: "ทำให้สั้นลงและเป็นทางการน้อยลง"</span></div>
+      <div class="quiz-opt" onclick="answer(this,'q7',false,'Starting a new chat loses all the context Claude has built up. / การเริ่มแชทใหม่ทำให้สูญเสียบริบททั้งหมดที่ Claude สะสมมา')"><span class="lng-en">Start a completely new chat</span><span class="lng-th">เริ่มแชทใหม่ทั้งหมด</span></div>
+    </div>
+    <div class="quiz-feedback" id="fb-q7"></div>
+  </div>
+
+  <div style="text-align:center;margin-top:20px;">
+    <button class="btn-copy" onclick="showScore()" id="score-btn" style="display:none;max-width:220px;margin:0 auto;"><span class="lng-en">See My Score →</span><span class="lng-th">ดูคะแนนของฉัน →</span></button>
+  </div>
+
+  <div class="score-panel" id="score-panel" style="display:none;">
+    <div class="score-circle" id="score-circle">?</div>
+    <h2 id="score-title" style="margin-bottom:10px;"><span class="lng-en">Calculating…</span><span class="lng-th">กำลังคำนวณ…</span></h2>
+    <p id="score-msg" style="max-width:400px;margin:0 auto;"></p>
+    <button class="btn-ghost" onclick="resetQuiz()"><span class="lng-en">Try Again ↺</span><span class="lng-th">ลองอีกครั้ง ↺</span></button>
+  </div>
+
+  <div class="section-nav">
+    <button class="btn-nav btn-prev" onclick="goTo(10)">← <span class="lng-en">Back</span><span class="lng-th">ย้อนกลับ</span></button>
+    <span class="nav-counter">12 / 12</span>
+    <button class="btn-nav btn-next" onclick="goTo(0)"><span class="lng-en">Start Over ↺</span><span class="lng-th">เริ่มใหม่ ↺</span></button>
+  </div>
+</div>
+
+</main><!-- /main -->
+
+<script>
+/* ─── NAV DATA ─── */
+const NAV = [
+  { id:'s0',  icon:'🏠', label:{en:'Overview',             th:'ภาพรวม'},               group:{en:'Getting Started', th:'เริ่มต้น'} },
+  { id:'s1',  icon:'🤖', label:{en:'What is Claude?',      th:'Claude คืออะไร?'},      group:null },
+  { id:'s2',  icon:'🖥️', label:{en:'Platforms',            th:'แพลตฟอร์ม'},            group:{en:'Using Claude',    th:'การใช้ Claude'} },
+  { id:'s3',  icon:'🔄', label:{en:'Interfaces',           th:'อินเทอร์เฟส'},          group:null },
+  { id:'s4',  icon:'📝', label:{en:'Prompting Basics',     th:'พื้นฐานการ Prompt'},    group:{en:'Prompting',       th:'การ Prompt'} },
+  { id:'s5',  icon:'🎯', label:{en:'CRAFT Framework',      th:'กรอบ CRAFT'},           group:null },
+  { id:'s6',  icon:'💡', label:{en:'Quick Tips',           th:'เคล็ดลับด่วน'},         group:null },
+  { id:'s7',  icon:'📊', label:{en:'Before & After',       th:'ก่อนและหลัง'},          group:null },
+  { id:'s8',  icon:'🔨', label:{en:'Prompt Builder',       th:'สร้าง Prompt'},         group:null },
+  { id:'s9',  icon:'🪙', label:{en:'Tokens & Models',      th:'Token และ Model'},      group:{en:'Deep Dive',       th:'เจาะลึก'} },
+  { id:'s10', icon:'⚡', label:{en:'Advanced Features',    th:'ฟีเจอร์ขั้นสูง'},       group:null },
+  { id:'s11', icon:'🎓', label:{en:'Knowledge Check',      th:'ทดสอบความรู้'},         group:null },
+];
+
+const TOTAL = NAV.length;
+let current = 0;
+const visited = new Set([0]);
+let currentLang = localStorage.getItem('lang') || 'en';
+
+/* ─── LANGUAGE TOGGLE ─── */
+function setLang(lang) {
+  currentLang = lang;
+  document.body.classList.toggle('tlang', lang === 'th');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-th').classList.toggle('active', lang === 'th');
+  buildSidebar();
+  // Re-apply active/done states after rebuilding sidebar
+  NAV.forEach((_, i) => {
+    const el = document.getElementById('nav-' + i);
+    if (!el) return;
+    if (i === current) { el.classList.add('active'); el.classList.remove('done'); }
+    else if (visited.has(i)) { el.classList.add('done'); el.classList.remove('active'); }
+  });
+  localStorage.setItem('lang', lang);
+}
+function lbl(item, key) {
+  const val = item[key];
+  return typeof val === 'object' ? val[currentLang] : val;
+}
+
+/* ─── BUILD SIDEBAR ─── */
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  let html = '';
+  let lastGroup = '';
+  NAV.forEach((item, i) => {
+    const grp = item.group ? lbl(item, 'group') : null;
+    if (grp && grp !== lastGroup) {
+      html += `<div class="nav-section-label">${grp}</div>`;
+      lastGroup = grp;
+    } else if (!item.group) {
+      lastGroup = '';
+    }
+    html += `<div class="nav-item${i===0?' active':''}" id="nav-${i}" onclick="goTo(${i})">
+      <span class="nav-icon">${item.icon}</span>
+      <span>${lbl(item,'label')}</span>
+      <span class="nav-dot"></span>
+    </div>`;
+  });
+  nav.innerHTML = html;
+}
+
+/* ─── INIT LANG ─── */
+if (currentLang === 'th') {
+  document.body.classList.add('tlang');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btn-th').classList.add('active');
+    document.getElementById('btn-en').classList.remove('active');
+  });
+}
+
+/* ─── NAVIGATION ─── */
+function goTo(n) {
+  if (n < 0 || n >= TOTAL) return;
+  visited.add(current);
+
+  document.getElementById(NAV[current].id).classList.remove('active');
+  document.getElementById('nav-' + current).classList.remove('active');
+  if (visited.has(current)) document.getElementById('nav-' + current).classList.add('done');
+
+  current = n;
+  visited.add(n);
+
+  document.getElementById(NAV[n].id).classList.add('active');
+  document.getElementById('nav-' + n).classList.remove('done');
+  document.getElementById('nav-' + n).classList.add('active');
+
+  updateProgress();
+  window.scrollTo(0, 0);
+
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function updateProgress() {
+  document.getElementById('mobileCounter').textContent = (current + 1) + '/' + TOTAL;
+}
+
+/* ─── KEYBOARD ─── */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') goTo(current + 1);
+  if (e.key === 'ArrowLeft')  goTo(current - 1);
+});
+
+/* ─── MOBILE SIDEBAR ─── */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+/* ─── ACCORDION ─── */
+function toggleAcc(head) { head.parentElement.classList.toggle('open'); }
+
+/* ─── TOKEN SLIDER ─── */
+function updateTokens(v) {
+  v = parseInt(v);
+  const labels = currentLang === 'th'
+    ? ['สั้น','ปานกลาง','ยาว','ยาวมาก','ใกล้ขีดสูงสุด']
+    : ['Short','Medium','Long','Very Long','Near Limit'];
+  const lbl = v < 20 ? labels[0] : v < 40 ? labels[1] : v < 65 ? labels[2] : v < 85 ? labels[3] : labels[4];
+  document.getElementById('convLen').textContent = lbl;
+  const sw = 5, uw = Math.min(5 + v * 0.7, 75), rw = Math.min(5 + v * 0.15, 15);
+  document.getElementById('bar-sys').style.width = sw + '%';
+  document.getElementById('bar-usr').style.width = uw + '%';
+  document.getElementById('bar-res').style.width = rw + '%';
+  const sT = 1000, uT = Math.round((uw/100)*200000), rT = Math.round((rw/100)*200000);
+  const pct = Math.round(((sT+uT+rT)/200000)*100);
+  document.getElementById('sys-count').textContent = '~' + sT.toLocaleString() + ' tokens';
+  document.getElementById('usr-count').textContent = '~' + uT.toLocaleString() + ' tokens';
+  document.getElementById('res-count').textContent = '~' + rT.toLocaleString() + ' tokens';
+  document.getElementById('tokenPct').textContent = pct + '% of window used';
+}
+updateTokens(20);
+
+/* ─── PROMPT BUILDER ─── */
+function g(id) { return document.getElementById(id).value.trim(); }
+
+function toggleOpt(key) {
+  const checked = document.getElementById('tog-' + key).checked;
+  document.getElementById('wrap-' + key).style.display = checked ? 'block' : 'none';
+}
+
+function buildPreview() {
+  const task     = g('b-task');
+  const ctx      = g('b-ctx');
+  const format   = g('b-format');
+  const role     = g('b-role');
+  const audience = g('b-audience');
+  const tone     = g('b-tone');
+  const avoid    = document.getElementById('tog-avoid').checked ? g('b-avoid') : '';
+  const example  = document.getElementById('tog-example').checked ? g('b-example') : '';
+
+  const parts = [];
+  if (role)     parts.push(role);
+  if (task)     parts.push((role ? '\n' : '') + task);
+  if (ctx)      parts.push('\nBackground: ' + ctx);
+  if (audience) parts.push('Audience: ' + audience);
+  if (tone)     parts.push('Tone: ' + tone);
+  if (format)   parts.push('Format: ' + format);
+  if (avoid)    parts.push('Please avoid: ' + avoid);
+  if (example)  parts.push('\nExample to match:\n' + example);
+
+  const box = document.getElementById('previewBox');
+  if (parts.length === 0) {
+    box.innerHTML = '<span class="preview-empty">Your assembled prompt will appear here as you fill in the fields…</span>';
+  } else {
+    box.innerHTML = '<span class="preview-text">' + esc(parts.join('\n')) + '</span>';
+  }
+
+  setChip('task',     task.length > 0);
+  setChip('ctx',      ctx.length > 0);
+  setChip('format',   format.length > 0);
+  setChip('role',     role.length > 0);
+  setChip('audience', audience.length > 0);
+  setChip('tone',     tone.length > 0);
+
+  const mFilled = [task, ctx, format].filter(f => f.length > 0).length;
+  const oFilled = [role, audience, tone].filter(f => f.length > 0).length;
+  const pct = Math.round((mFilled/3)*70 + (oFilled/3)*30);
+
+  const fill = document.getElementById('qualityFill');
+  fill.style.width = pct + '%';
+  fill.style.background = pct < 35 ? '#ff6b6b' : pct < 70 ? '#ffd166' : '#52e3a1';
+  const msgs = currentLang === 'th'
+    ? ['เริ่มพิมพ์','ต่อไป…','ใกล้แล้ว!','เกือบสมบูรณ์!','ยอดเยี่ยม!']
+    : ['start typing','keep going…','getting there!','almost there!','looks great!'];
+  document.getElementById('qualityLabel').textContent = pct + '% — ' + msgs[Math.min(Math.floor(pct/25), 4)];
+}
+
+function setChip(id, done) {
+  const el = document.getElementById('chip-' + id);
+  if (el) el.classList.toggle('done', done);
+}
+
+function copyPrompt() {
+  const task     = g('b-task');
+  const ctx      = g('b-ctx');
+  const format   = g('b-format');
+  const role     = g('b-role');
+  const audience = g('b-audience');
+  const tone     = g('b-tone');
+  const avoid    = document.getElementById('tog-avoid').checked ? g('b-avoid') : '';
+  const example  = document.getElementById('tog-example').checked ? g('b-example') : '';
+
+  const parts = [];
+  if (role)     parts.push(role);
+  if (task)     parts.push((role ? '\n' : '') + task);
+  if (ctx)      parts.push('\nBackground: ' + ctx);
+  if (audience) parts.push('Audience: ' + audience);
+  if (tone)     parts.push('Tone: ' + tone);
+  if (format)   parts.push('Format: ' + format);
+  if (avoid)    parts.push('Please avoid: ' + avoid);
+  if (example)  parts.push('\nExample to match:\n' + example);
+
+  navigator.clipboard.writeText(parts.join('\n').trim()).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy Prompt'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+
+function resetBuilder() {
+  ['b-task','b-ctx','b-format','b-role','b-avoid','b-example'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  ['b-audience','b-tone'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  ['avoid','example'].forEach(key => {
+    document.getElementById('tog-' + key).checked = false;
+    document.getElementById('wrap-' + key).style.display = 'none';
+  });
+  buildPreview();
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+buildPreview();
+
+/* ─── BEFORE & AFTER SCENARIOS ─── */
+const scenarios = {
+  email: {
+    title: 'Writing an email',
+    bad:   { label:'✗ Vague',   text:'Write an email about the project delay.',  note:'Claude has to guess: Who is it to? How delayed? What tone? What to include?' },
+    med:   { label:'△ Better',  text:'Write a professional email to our client explaining the project will be delayed by two weeks. Be apologetic but confident.', note:"Clearer, but Claude still doesn't know the client, the reason, or what sections to include." },
+    great: { label:'✓ Great',   text:"You are a senior account manager at a consulting firm.\n\nWrite an email to Sarah Chen at Acme Corp explaining our project delivery will be delayed by two weeks due to unexpected data issues found during testing.\n\nTone: professional, honest, and solution-focused — not defensive or over-apologetic.\n\nInclude:\n- A brief, honest explanation of what happened\n- What we're doing to resolve it\n- The revised delivery date\n- A reassuring closing\n\nKeep it under 150 words. No jargon.", note:'Claude now has everything: role, recipient, reason, tone, structure, and length.' },
+    missing: ['Who the email is to','Why the delay happened','What tone to strike','What content to include','How long it should be'],
+    added:   ['Role defined (senior account manager)','Exact content structure provided','Hard word limit set','No-jargon constraint added','Honest, solution-focused tone specified']
+  },
+  summary: {
+    title: 'Summarizing a document',
+    bad:   { label:'✗ Vague',   text:'Summarize this.',  note:"Claude doesn't know what's important, who it's for, or how long the summary should be." },
+    med:   { label:'△ Better',  text:'Summarize this quarterly performance report for our leadership team. Focus on the most important points.', note:'Audience and focus added — but "most important" is subjective. No format or length guidance.' },
+    great: { label:'✓ Great',   text:"You are a senior business analyst.\n\nSummarize the quarterly performance report below for our CEO, who has 5 minutes to read it and was not at the review meeting.\n\nFocus on:\n1. The 3 most important findings\n2. What's going well and should continue\n3. The 2 biggest risks or problem areas\n4. Recommended next steps\n\nFormat: short bullet points under each heading. No more than 200 words total. Plain language — no statistics jargon.\n\n[paste document here]", note:'Audience, role, focus areas, format, length, and reading context all explicitly defined.' },
+    missing: ['Who the summary is for','What counts as "important"','How long it should be','What format to use','What areas to focus on'],
+    added:   ['Analyst role given','CEO as specific reader, with context (5 min, missed meeting)','Four clear focus areas numbered','Hard word limit (200 words)','Format: bullets under headings, plain language']
+  },
+  meeting: {
+    title: 'Preparing for a meeting',
+    bad:   { label:'✗ Vague',   text:'Help me prepare for my meeting tomorrow.',  note:"Claude knows nothing about the meeting, who's attending, the goal, or what 'prepare' means to you." },
+    med:   { label:'△ Better',  text:"Help me prepare talking points for a budget meeting with our CFO tomorrow. I'm requesting a 20% increase for my team.", note:"Good context on the situation, but no information on the CFO's likely stance, what format to use, or how detailed the output should be." },
+    great: { label:'✓ Great',   text:"You are an experienced marketing director preparing to present to a skeptical CFO.\n\nI need to justify a 20% budget increase for my digital marketing team in our quarterly review tomorrow. The CFO is known for challenging ROI claims and dislikes vague marketing metrics.\n\nHelp me prepare by:\n1. Giving me 5 strong talking points that connect marketing spend to measurable business outcomes\n2. For each point, noting what data I should pull together before the meeting\n3. Listing the 3 most likely objections the CFO will raise and how to respond to each\n\nKeep language business-focused. Avoid marketing buzzwords.", note:"Claude now knows the stakes, the audience's mindset, what good looks like, and exactly what to produce." },
+    missing: ['What the meeting is about','Who is attending','What the goal is','What kind of help is needed','What the output should look like'],
+    added:   ["Role given (marketing director, not just 'me')","CFO's mindset described (skeptical, dislikes vague metrics)",'Three specific deliverables requested','Numbered structure makes output easy to use','Buzzword constraint added']
+  }
+};
+
+function switchScenario(name, btn) {
+  document.querySelectorAll('.scen-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderScenario(name);
+}
+
+function renderScenario(name) {
+  const s = scenarios[name];
+  document.getElementById('scen-out').innerHTML = `
+    <p style="font-size:0.82rem;color:var(--text2);margin-bottom:18px;">Watch how quality improves as more guidance is added at each level.</p>
+    <div class="level-grid">
+      <div class="lcard bad"><div class="lvl-lbl">${s.bad.label}</div><div class="lcard-text">${esc(s.bad.text)}</div><div class="lcard-note">${s.bad.note}</div></div>
+      <div class="lcard med"><div class="lvl-lbl">${s.med.label}</div><div class="lcard-text">${esc(s.med.text)}</div><div class="lcard-note">${s.med.note}</div></div>
+      <div class="lcard great"><div class="lvl-lbl">${s.great.label}</div><div class="lcard-text">${esc(s.great.text)}</div><div class="lcard-note">${s.great.note}</div></div>
+    </div>
+    <div class="analysis">
+      <div class="acard">
+        <h4 style="color:var(--red);">Why vague prompts fall short</h4>
+        ${s.missing.map(i => `<div class="chk-row"><div class="ci n">✕</div><span>${i}</span></div>`).join('')}
+      </div>
+      <div class="acard">
+        <h4 style="color:var(--green);">What the great prompt adds</h4>
+        ${s.added.map(i => `<div class="chk-row"><div class="ci y">✓</div><span>${i}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+renderScenario('email');
+
+/* ─── QUIZ ─── */
+let quizAnswers = {};
+const TOTAL_Q = 7;
+
+function answer(el, qId, correct, explanation) {
+  if (quizAnswers[qId] !== undefined) return;
+  quizAnswers[qId] = correct;
+
+  const opts = el.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    opts.forEach(o => {
+      if (o.getAttribute('onclick') && o.getAttribute('onclick').includes('true'))
+        o.classList.add('correct');
+    });
+  }
+  // explanation string: "EN text / TH text" — split on " / " for language support
+  const fb = document.getElementById('fb-' + qId);
+  const parts = explanation.split(' / ');
+  const expText = currentLang === 'th' && parts[1] ? parts[1] : parts[0];
+  const prefix = correct
+    ? (currentLang === 'th' ? '✓ ถูกต้อง! ' : '✓ Correct! ')
+    : (currentLang === 'th' ? '✗ ไม่ถูกต้อง ' : '✗ Not quite. ');
+  fb.textContent = prefix + expText;
+  fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
+
+  if (Object.keys(quizAnswers).length === TOTAL_Q) {
+    document.getElementById('score-btn').style.display = 'inline-block';
+  }
+}
+
+function showScore() {
+  const score = Object.values(quizAnswers).filter(Boolean).length;
+  const pct = Math.round((score / TOTAL_Q) * 100);
+  document.getElementById('score-panel').style.display = 'block';
+  document.getElementById('score-btn').style.display = 'none';
+  const circle = document.getElementById('score-circle');
+  circle.textContent = score + '/' + TOTAL_Q;
+  circle.style.background = `conic-gradient(var(--accent) ${pct}%, var(--surface2) ${pct}%)`;
+  const isTh = currentLang === 'th';
+  const titles = isTh
+    ? {7:'ผู้เชี่ยวชาญ Claude! 🎉', 6:'เกือบสมบูรณ์แบบ!', 5:'ยอดเยี่ยม!', 4:'พยายามดี!', 0:'เรียนรู้ต่อไป!'}
+    : {7:'Claude Expert! 🎉', 6:'Almost Perfect!', 5:'Great Work!', 4:'Good Effort!', 0:'Keep Learning!'};
+  const msgs = isTh ? {
+    7: 'คะแนนสมบูรณ์! คุณเข้าใจ Claude อย่างถ่องแท้ พร้อมนำไปใช้งานได้เลย',
+    6: 'ยอดเยี่ยม! ทบทวนข้อที่พลาดและคุณก็พร้อมแล้ว',
+    5: 'พื้นฐานแน่น ทบทวนส่วน Interfaces และ Prompting เพื่อเสริมความเข้าใจ',
+    4: 'เริ่มต้นดี ทบทวน Prompting Basics และ Quick Tips อีกครั้ง',
+    0: 'ไม่เป็นไร — AI เป็นดินแดนใหม่ ทำงานผ่านแต่ละบทและลองอีกครั้ง'
+  } : {
+    7: 'Perfect score! You have a thorough understanding of Claude. Ready to put it all to work.',
+    6: "Excellent! Review the one you missed and you're all set.",
+    5: 'Solid foundation. Revisit the sections on Interfaces and Prompting to strengthen the gaps.',
+    4: 'Good start. Work through Prompting Basics and Quick Tips again.',
+    0: 'No worries — AI is new territory. Work through each chapter and try again.'
+  };
+  document.getElementById('score-title').textContent = titles[score] || titles[0];
+  document.getElementById('score-msg').textContent = msgs[score] || msgs[0];
+}
+
+function resetQuiz() {
+  quizAnswers = {};
+  document.querySelectorAll('.quiz-opt').forEach(o => { o.className = 'quiz-opt'; o.style.pointerEvents = ''; });
+  document.querySelectorAll('.quiz-feedback').forEach(f => f.className = 'quiz-feedback');
+  document.getElementById('score-panel').style.display = 'none';
+  document.getElementById('score-btn').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+/* ─── INIT ─── */
+buildSidebar();
+updateProgress();
+</script>
+</body>
+</html>
